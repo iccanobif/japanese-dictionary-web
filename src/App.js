@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 //<img src={logo} />
 import './App.css';
+import Spinner from './spinner/spinner'
 
 export default class App extends Component
 {
@@ -10,7 +11,8 @@ export default class App extends Component
     super(props)
     this.state = {
       queryResults: [],
-      query: ""
+      query: "",
+      querying: false,
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -19,13 +21,27 @@ export default class App extends Component
 
   doQuery(query)
   {
+    if (!query)
+      return
+
+    this.setState({ querying: true })
     fetch("https://www.iccan.us/japanese-api/dictionary/" + query)
       .then((result) =>
       {
-        result.json().then((json =>
-        {
-          this.setState({ queryResults: json.reduce((acc, val) => acc.concat(val.glosses), []) })
-        }))
+        if (result.ok)
+          result.json().then((json =>
+          {
+            this.setState({
+              queryResults: json.reduce((acc, val) => acc.concat(val.glosses), [])
+            })
+          }))
+        else
+          alert("error")
+        this.setState({ querying: false })
+      })
+      .catch(err =>
+      {
+        alert(err)
       })
   }
 
@@ -44,11 +60,12 @@ export default class App extends Component
   {
     return (
       <div className="App">
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className="SearchForm">
           <input type="text" value={this.state.query} onChange={this.handleChange} />
           <input type="submit" value="Search"></input>
+          <Spinner visible={this.state.querying} />
         </form>
-        
+
         <SearchResults results={this.state.queryResults}></SearchResults>
 
       </div>
