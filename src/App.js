@@ -19,7 +19,7 @@ export default class App extends Component
       {
         result.json().then((json =>
         {
-          this.setState({queryResults: json.reduce((acc, val) => acc.concat(val.glosses), [])})
+          this.setState({ queryResults: json.reduce((acc, val) => acc.concat(val.glosses), []) })
         }))
       })
   }
@@ -28,11 +28,9 @@ export default class App extends Component
   {
     return (
       <div className="App">
-        <header className="App-header">
-          <input type="text"></input>
-          <button>Search</button>
-          <SearchResults results={this.state.queryResults}></SearchResults>
-        </header>
+        <input type="text"></input>
+        <button>Search</button>
+        <SearchResults results={this.state.queryResults}></SearchResults>
       </div>
     );
   }
