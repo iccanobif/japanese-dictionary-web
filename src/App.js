@@ -1,19 +1,37 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-//<img src={logo} className="App-logo" alt="logo" />
+//<img src={logo} />
 import './App.css';
 
 export default class App extends Component
 {
+  constructor(props)
+  {
+    super(props)
+    this.state = {
+      queryResults: ['...']
+    }
+  }
+  componentDidMount()
+  {
+    fetch("https://www.iccan.us/japanese-api/dictionary/%E3%81%84%E3%81%98%E3%82%87%E3%81%86")
+      .then((result) =>
+      {
+        result.json().then((json =>
+        {
+          this.setState({queryResults: json.reduce((acc, val) => acc.concat(val.glosses), [])})
+        }))
+      })
+  }
+
   render()
   {
-    const results = ['result 1', 'result 2']
-
     return (
       <div className="App">
         <header className="App-header">
           <input type="text"></input>
-          <SearchResults results={results}></SearchResults>
+          <button>Search</button>
+          <SearchResults results={this.state.queryResults}></SearchResults>
         </header>
       </div>
     );
@@ -24,7 +42,7 @@ class SearchResults extends Component
 {
   render()
   {
-    return this.props.results
-      .map(r => (<div>{r}</div>))
+    const list = this.props.results.map((r, i) => (<li key={i}>{r}</li>))
+    return <ul className="meh">{list}</ul>
   }
 }
