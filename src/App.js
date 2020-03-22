@@ -9,12 +9,17 @@ export default class App extends Component
   {
     super(props)
     this.state = {
-      queryResults: ['...']
+      queryResults: [],
+      query: ""
     }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
-  componentDidMount()
+
+  doQuery(query)
   {
-    fetch("https://www.iccan.us/japanese-api/dictionary/%E3%81%84%E3%81%98%E3%82%87%E3%81%86")
+    fetch("https://www.iccan.us/japanese-api/dictionary/" + query)
       .then((result) =>
       {
         result.json().then((json =>
@@ -24,13 +29,28 @@ export default class App extends Component
       })
   }
 
+  handleChange(event)
+  {
+    this.setState({ query: event.target.value })
+  }
+
+  handleSubmit(event)
+  {
+    this.doQuery(this.state.query)
+    event.preventDefault()
+  }
+
   render()
   {
     return (
       <div className="App">
-        <input type="text"></input>
-        <button>Search</button>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" value={this.state.query} onChange={this.handleChange} />
+          <input type="submit" value="Search"></input>
+        </form>
+        
         <SearchResults results={this.state.queryResults}></SearchResults>
+
       </div>
     );
   }
@@ -40,6 +60,9 @@ class SearchResults extends Component
 {
   render()
   {
+    if (this.props.results.length == 0)
+      return (<div>No results found</div>)
+
     const list = this.props.results.map((r, i) => (<li key={i}>{r}</li>))
     return <ul className="meh">{list}</ul>
   }
