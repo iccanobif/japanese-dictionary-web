@@ -10,7 +10,7 @@ export default class App extends Component
   {
     super(props)
     this.state = {
-      queryResults: [],
+      queryResults: null,
       query: "",
       querying: false,
     }
@@ -62,7 +62,7 @@ export default class App extends Component
       <div className="App">
         <form onSubmit={this.handleSubmit} className="SearchForm">
           <input type="text" value={this.state.query} onChange={this.handleChange} />
-          <input type="submit" value="Search"></input>
+          <input type="submit" value="検索"></input>
           <Spinner visible={this.state.querying} />
         </form>
 
@@ -77,8 +77,10 @@ class SearchResults extends Component
 {
   render()
   {
+    if (this.props.results === null)
+      return null
     if (this.props.results.length === 0)
-      return (<div>No results found</div>)
+      return (<div>一致する結果はありません</div>)
 
     const list = this.props.results.map((r, i) => (<li key={i}>{r}</li>))
     return <ul className="meh">{list}</ul>
