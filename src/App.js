@@ -25,7 +25,7 @@ export default class App extends Component
       return
 
     this.setState({ querying: true })
-    fetch("https://www.iccan.us/japanese-api/dictionary/" + query)
+    fetch("https://japdictapi.herokuapp.com/dictionary/" + query)
       .then((result) =>
       {
         if (result.ok)
@@ -77,7 +77,7 @@ class SearchResults extends Component
 {
   render()
   {
-    if (this.props.results.length == 0)
+    if (this.props.results.length === 0)
       return (<div>No results found</div>)
 
     const list = this.props.results.map((r, i) => (<li key={i}>{r}</li>))
