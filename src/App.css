@@ -1,5 +1,4 @@
 .App {
-  
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -11,4 +10,8 @@
 
 .SearchForm {
   display: flex;
+}
+
+.radical-search-results li {
+  display: inline-block;
 }

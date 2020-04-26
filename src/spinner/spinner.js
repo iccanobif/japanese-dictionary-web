@@ -10,6 +10,6 @@ export default class Spinner extends Component
         const visible = this.props.visible
         const cssVisibilityValue = visible ? "unset" : "hidden"
 
-        return (<div class="loader" style={{ visibility: cssVisibilityValue }}></div>)
+        return (<div className="loader" style={{ visibility: cssVisibilityValue }}></div>)
     }
 }
