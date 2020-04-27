@@ -21,16 +21,24 @@ class RadicalSearchResults extends Component {
     if (this.props.results.length === 0)
       return <div>一致する結果はありません</div>;
 
-    const list = this.props.results
-      .slice(0, 20)
-      .map((r, i) => <li key={i}>{r}</li>);
+    const list = this.props.results.slice(0, 20).map((r, i) => (
+      <button key={i} onClick={this.kanjiClicked} value={r}>
+        {r}
+      </button>
+    ));
 
-    if (this.props.results.length > 20) list.push(<li>...</li>);
-    return (
-      <>
-        <ul className="radical-search-results">{list}</ul>
-      </>
-    );
+    if (this.props.results.length > 20) list.push("...");
+    return <div className="clickable-kanjis">{list}</div>;
+  }
+
+  constructor(props) {
+    super(props);
+    this.kanjiClicked = this.kanjiClicked.bind(this);
+  }
+
+  kanjiClicked(param) {
+    const kanji = param.target.value;
+    alert(kanji)
   }
 }
 
@@ -42,7 +50,6 @@ class RadicalSearch extends Component {
           <label>Radical search:</label>
           <input
             type="text"
-            value={this.state.query}
             onChange={this.handleChange}
           />
           <Spinner visible={this.state.querying} />
@@ -61,7 +68,6 @@ class RadicalSearch extends Component {
       querying: false,
     };
 
-    // this.handleChange = debounce(this.handleChange, 10).bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -97,7 +103,7 @@ class DictionarySearch extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit} className="SearchForm">
-        <label>Dictionary search:</label>
+          <label>Dictionary search:</label>
           <input
             type="text"
             value={this.state.query}
