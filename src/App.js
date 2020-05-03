@@ -61,7 +61,7 @@ export default class App extends Component {
     if (!query) return;
 
     this.setState({ dictionaryQuerying: true });
-    fetch("https://japdictapi.herokuapp.com/dictionary/" + query)
+    fetch("https://japdictapi.herokuapp.com/word/" + query)
       .then((result) => {
         if (result.ok)
           result.json().then((json) => {
