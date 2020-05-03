@@ -66,10 +66,7 @@ export default class App extends Component {
         if (result.ok)
           result.json().then((json) => {
             this.setState({
-              dictionaryQueryResults: json.reduce(
-                (acc, val) => acc.concat(val.glosses),
-                []
-              ),
+              dictionaryQueryResults: json,
             });
           });
         else {
