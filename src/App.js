@@ -8,64 +8,111 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryResults: null,
-      query: "",
-      querying: false,
+      dictionaryQueryResults: null,
+      dictionaryQuery: "",
+      dictionaryQuerying: false,
+      radicalsQueryResults: null,
+      radicalsQuerying: false,
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRadicalChange = this.handleRadicalChange.bind(this);
+    this.handleDictionaryChange = this.handleDictionaryChange.bind(this);
+    this.handleDictionarySubmit = this.handleDictionarySubmit.bind(this);
+    this.appendKanjiToQuery = this.appendKanjiToQuery.bind(this);
+  }
+
+  appendKanjiToQuery(kanji) {
+    this.setState((state) => ({ dictionaryQuery: "merda" }));
   }
 
   render() {
     return (
       <div className="App">
-        <RadicalSearch />
-        <form onSubmit={this.handleSubmit} className="SearchForm">
+        <form className="SearchForm">
+          <label>部首検索：</label>
+          <input type="text" onChange={this.handleRadicalChange} />
+          <Spinner visible={this.state.radicalsQuerying} />
+        </form>
+        <RadicalSearchResults
+          results={this.state.radicalsQueryResults}
+        ></RadicalSearchResults>
+
+        <form onSubmit={this.handleDictionarySubmit} className="SearchForm">
           <label>辞典検索：</label>
           <input
             type="text"
-            value={this.state.query}
-            onChange={this.handleChange}
+            value={this.state.dictionaryQuery}
+            onChange={this.handleDictionaryChange}
           />
           <input type="submit" value="検索"></input>
-          <Spinner visible={this.state.querying} />
+          <Spinner visible={this.state.dictionaryQuerying} />
         </form>
-        <SearchResults results={this.state.queryResults}></SearchResults>
+        <SearchResults
+          results={this.state.dictionaryQueryResults}
+        ></SearchResults>
       </div>
     );
   }
 
-  doQuery(query) {
+  doDictionaryQuery(query) {
     if (!query) return;
 
-    this.setState({ querying: true });
+    this.setState({ dictionaryQuerying: true });
     fetch("https://japdictapi.herokuapp.com/dictionary/" + query)
       .then((result) => {
         if (result.ok)
           result.json().then((json) => {
             this.setState({
-              queryResults: json.reduce(
+              dictionaryQueryResults: json.reduce(
                 (acc, val) => acc.concat(val.glosses),
                 []
               ),
             });
           });
-        else alert("error");
-        this.setState({ querying: false });
+        else {
+          alert("error");
+          console.error(result.statusText);
+        }
+        this.setState({ dictionaryQuerying: false });
       })
       .catch((err) => {
         alert(err);
       });
   }
 
-  handleChange(event) {
-    this.setState({ query: event.target.value });
+  handleDictionaryChange(event) {
+    this.setState({ dictionaryQuery: event.target.value });
   }
 
-  handleSubmit(event) {
-    this.doQuery(this.state.query);
+  handleDictionarySubmit(event) {
+    this.doDictionaryQuery(this.state.dictionaryQuery);
     event.preventDefault();
+  }
+
+  handleRadicalChange(event) {
+    const query = event.target.value;
+
+    this.doRadicalQuery(query);
+  }
+
+  doRadicalQuery(query) {
+    if (!query) return;
+
+    this.setState({ radicalsQuerying: true });
+    fetch("https://japdictapi.herokuapp.com/kanji-by-radical/" + query)
+      .then((result) => {
+        if (result.ok)
+          result.json().then((json) => {
+            this.setState({
+              radicalsQueryResults: json,
+            });
+          });
+        else alert("error");
+        this.setState({ radicalsQuerying: false });
+      })
+      .catch((err) => {
+        alert(err);
+      });
   }
 }
 
@@ -93,59 +140,6 @@ class RadicalSearchResults extends Component {
   kanjiClicked(param) {
     const kanji = param.target.value;
     alert(kanji);
-  }
-}
-
-class RadicalSearch extends Component {
-  render() {
-    return (
-      <>
-        <form onSubmit={this.handleSubmit} className="SearchForm">
-          <label>部首検索：</label>
-          <input type="text" onChange={this.handleChange} />
-          <Spinner visible={this.state.querying} />
-        </form>
-        <RadicalSearchResults
-          results={this.state.queryResults}
-        ></RadicalSearchResults>
-      </>
-    );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      queryResults: null,
-      querying: false,
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  doQuery(query) {
-    if (!query) return;
-
-    this.setState({ querying: true });
-    fetch("https://japdictapi.herokuapp.com/kanji-by-radical/" + query)
-      .then((result) => {
-        if (result.ok)
-          result.json().then((json) => {
-            this.setState({
-              queryResults: json,
-            });
-          });
-        else alert("error");
-        this.setState({ querying: false });
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  }
-
-  handleChange(event) {
-    const query = event.target.value;
-
-    this.doQuery(query);
   }
 }
 
