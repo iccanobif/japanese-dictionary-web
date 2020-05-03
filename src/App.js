@@ -47,7 +47,7 @@ class RadicalSearch extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit} className="SearchForm">
-          <label>Radical search:</label>
+          <label>部首検索：</label>
           <input
             type="text"
             onChange={this.handleChange}
@@ -103,7 +103,7 @@ class DictionarySearch extends Component {
     return (
       <>
         <form onSubmit={this.handleSubmit} className="SearchForm">
-          <label>Dictionary search:</label>
+          <label>辞典検索：</label>
           <input
             type="text"
             value={this.state.query}
