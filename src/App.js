@@ -3,6 +3,8 @@ import React, { Component } from "react";
 //<img src={logo} />
 import "./App.css";
 import Spinner from "./spinner/spinner";
+import { RadicalSearchResults } from "./RadicalSearchResults";
+import { DictionarySearchResults } from "./DictionarySearchResults";
 
 export default class App extends Component {
   constructor(props) {
@@ -22,7 +24,9 @@ export default class App extends Component {
   }
 
   appendKanjiToQuery(kanji) {
-    this.setState((state) => ({ dictionaryQuery: "merda" }));
+    this.setState((state) => ({
+      dictionaryQuery: state.dictionaryQuery + kanji,
+    }));
   }
 
   render() {
@@ -47,9 +51,9 @@ export default class App extends Component {
           <input type="submit" value="検索"></input>
           <Spinner visible={this.state.dictionaryQuerying} />
         </form>
-        <SearchResults
+        <DictionarySearchResults
           results={this.state.dictionaryQueryResults}
-        ></SearchResults>
+        ></DictionarySearchResults>
       </div>
     );
   }
@@ -113,43 +117,5 @@ export default class App extends Component {
       .catch((err) => {
         alert(err);
       });
-  }
-}
-
-class RadicalSearchResults extends Component {
-  render() {
-    if (this.props.results === null) return null;
-    if (this.props.results.length === 0)
-      return <div>一致する結果はありません</div>;
-
-    const list = this.props.results.slice(0, 20).map((r, i) => (
-      <button key={i} onClick={this.kanjiClicked} value={r}>
-        {r}
-      </button>
-    ));
-
-    if (this.props.results.length > 20) list.push("...");
-    return <div className="clickable-kanjis">{list}</div>;
-  }
-
-  constructor(props) {
-    super(props);
-    this.kanjiClicked = this.kanjiClicked.bind(this);
-  }
-
-  kanjiClicked(param) {
-    const kanji = param.target.value;
-    alert(kanji);
-  }
-}
-
-class SearchResults extends Component {
-  render() {
-    if (this.props.results === null) return null;
-    if (this.props.results.length === 0)
-      return <div>一致する結果はありません</div>;
-
-    const list = this.props.results.map((r, i) => <li key={i}>{r}</li>);
-    return <ul>{list}</ul>;
   }
 }
