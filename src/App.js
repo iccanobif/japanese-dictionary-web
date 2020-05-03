@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import logo from './logo.svg';
-//<img src={logo} />
 import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
@@ -39,6 +37,7 @@ export default class App extends Component {
         </form>
         <RadicalSearchResults
           results={this.state.radicalsQueryResults}
+          kanjiClickedCallback={this.appendKanjiToQuery}
         ></RadicalSearchResults>
 
         <form onSubmit={this.handleDictionarySubmit} className="SearchForm">

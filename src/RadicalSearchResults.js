@@ -23,6 +23,6 @@ export class RadicalSearchResults extends Component {
 
   kanjiClicked(param) {
     const kanji = param.target.value;
-    alert(kanji);
+    this.props.kanjiClickedCallback(kanji)
   }
 };
