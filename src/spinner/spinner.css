@@ -1,7 +1,7 @@
 .loader {
     display: inline-block;
     font-size: 10px;
-    margin: 5px auto;
+    /* margin: 5px auto; */
     text-indent: -9999em;
     width: 2em;
     height: 2em;
