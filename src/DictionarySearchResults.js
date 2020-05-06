@@ -1,15 +1,56 @@
 import React, { Component } from "react";
 
 export class DictionarySearchResults extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedWordIndex: null,
+    };
+  }
+
   render() {
     if (this.props.results.length === 0)
       return <div>一致する結果はありません</div>;
 
-    const list = this.props.results.map((r, i) => {
-      return <WordResults key={i} results={r.dictionaryEntries} />;
-    });
-    return <>{list}</>;
+    return (
+      <>
+        <WordList
+          words={this.props.results.map((r) => r.word)}
+          onWordSelected={this.handleWordClick}
+        ></WordList>
+        {this.state.selectedWordIndex == null ? null : (
+          <WordResults
+            results={
+              this.props.results[this.state.selectedWordIndex].dictionaryEntries
+            }
+          />
+        )}
+      </>
+    );
   }
+
+  handleWordClick = (index) => {
+    this.setState({ selectedWordIndex: index });
+  };
+}
+
+class WordList extends Component {
+  render() {
+    const words = this.props.words;
+    return (
+      <div>
+        {words.map((w, i) => (
+          <button key={i} value={i} onClick={this.handleWordClick}>
+            {w}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  handleWordClick = (event) => {
+    this.props.onWordSelected(event.target.value);
+  };
 }
 
 class WordResults extends Component {
@@ -34,7 +75,7 @@ class DictionaryEntry extends Component {
     ));
 
     return (
-      <div class="dictionary-entry">
+      <div className="dictionary-entry">
         {lemmas}
         <ul>{glosses}</ul>
       </div>
