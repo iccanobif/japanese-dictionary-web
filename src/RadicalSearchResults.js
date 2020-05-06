@@ -16,13 +16,8 @@ export class RadicalSearchResults extends Component {
     return <div className="clickable-kanjis">{list}</div>;
   }
 
-  constructor(props) {
-    super(props);
-    this.kanjiClicked = this.kanjiClicked.bind(this);
-  }
-
-  kanjiClicked(param) {
-    const kanji = param.target.value;
-    this.props.kanjiClickedCallback(kanji)
-  }
-};
+  kanjiClicked = (e) => {
+    const kanji = e.target.value;
+    this.props.kanjiClickedCallback(kanji);
+  };
+}

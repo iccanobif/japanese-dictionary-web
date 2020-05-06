@@ -14,14 +14,9 @@ export default class App extends Component {
       radicalsQueryResults: null,
       radicalsQuerying: false,
     };
-
-    this.handleRadicalChange = this.handleRadicalChange.bind(this);
-    this.handleDictionaryChange = this.handleDictionaryChange.bind(this);
-    this.handleDictionarySubmit = this.handleDictionarySubmit.bind(this);
-    this.appendKanjiToQuery = this.appendKanjiToQuery.bind(this);
   }
 
-  appendKanjiToQuery(kanji) {
+  appendKanjiToQuery = kanji => {
     this.setState((state) => ({
       dictionaryQuery: state.dictionaryQuery + kanji,
     }));
@@ -57,7 +52,7 @@ export default class App extends Component {
     );
   }
 
-  doDictionaryQuery(query) {
+  doDictionaryQuery = (query) => {
     if (!query) return;
 
     this.setState({ dictionaryQuerying: true });
@@ -80,22 +75,22 @@ export default class App extends Component {
       });
   }
 
-  handleDictionaryChange(event) {
+  handleDictionaryChange = (event) => {
     this.setState({ dictionaryQuery: event.target.value });
   }
 
-  handleDictionarySubmit(event) {
+  handleDictionarySubmit = (event) => {
     this.doDictionaryQuery(this.state.dictionaryQuery);
     event.preventDefault();
   }
 
-  handleRadicalChange(event) {
+  handleRadicalChange = (event) => {
     const query = event.target.value;
 
     this.doRadicalQuery(query);
   }
 
-  doRadicalQuery(query) {
+  doRadicalQuery = (query) => {
     if (!query) return;
 
     this.setState({ radicalsQuerying: true });
