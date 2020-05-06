@@ -8,7 +8,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dictionaryQueryResults: null,
+      dictionaryQueryResults: [],
       dictionaryQuery: "",
       dictionaryQuerying: false,
       radicalsQueryResults: null,
@@ -61,7 +61,7 @@ export default class App extends Component {
     if (!query) return;
 
     this.setState({ dictionaryQuerying: true });
-    fetch("https://japdictapi.herokuapp.com/word/" + query)
+    fetch("https://japdictapi.herokuapp.com/sentence/" + query)
       .then((result) => {
         if (result.ok)
           result.json().then((json) => {
