@@ -1,11 +1,23 @@
 import React, { Component } from "react";
 
+function generateInitialState(props) {
+  return {
+    selectedWordIndex: props.results.length > 0 ? 0 : null,
+    previousResults: props.results,
+  };
+}
+
 export class DictionarySearchResults extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedWordIndex: null,
-    };
+    this.state = generateInitialState(props);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.results !== state.previousResults) {
+      return generateInitialState(props);
+    }
+    return null;
   }
 
   render() {
