@@ -3,6 +3,7 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
+import DebouncingTextbox from "./DebouncingTextbox"
 
 export default class App extends Component {
   constructor(props) {
@@ -16,18 +17,18 @@ export default class App extends Component {
     };
   }
 
-  appendKanjiToQuery = kanji => {
+  appendKanjiToQuery = (kanji) => {
     this.setState((state) => ({
       dictionaryQuery: state.dictionaryQuery + kanji,
     }));
-  }
+  };
 
   render() {
     return (
       <div className="App">
         <form className="SearchForm">
           <label>部首検索：</label>
-          <input type="text" onChange={this.handleRadicalChange} />
+          <DebouncingTextbox onTextChanged={this.handleRadicalChange} />
           <Spinner visible={this.state.radicalsQuerying} />
         </form>
         <RadicalSearchResults
@@ -73,22 +74,20 @@ export default class App extends Component {
       .catch((err) => {
         alert(err);
       });
-  }
+  };
 
   handleDictionaryChange = (event) => {
     this.setState({ dictionaryQuery: event.target.value });
-  }
+  };
 
   handleDictionarySubmit = (event) => {
     this.doDictionaryQuery(this.state.dictionaryQuery);
     event.preventDefault();
-  }
+  };
 
-  handleRadicalChange = (event) => {
-    const query = event.target.value;
-
+  handleRadicalChange = (query) => {
     this.doRadicalQuery(query);
-  }
+  };
 
   doRadicalQuery = (query) => {
     if (!query) return;
@@ -108,5 +107,5 @@ export default class App extends Component {
       .catch((err) => {
         alert(err);
       });
-  }
+  };
 }
