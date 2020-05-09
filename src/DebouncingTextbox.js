@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from "lodash";
 
 export default class DebouncingTextbox extends Component {
   constructor(props) {
@@ -14,15 +15,12 @@ export default class DebouncingTextbox extends Component {
   }
 
   handleTextChange = async (event) => {
-    // const query = event.target.value;
-    // this.setState((state) => {
-    //   if (state.handlingCallback)
-    //   const result = await this.props.onTextChanged(query);
-    //   return { handlingCallback: true };
-    // });
-
-    // this.setState({ handlingCallback: true });
-
-    this.props.onTextChanged(event.target.value)
+    event.persist();
+    if (!this.debouncedFn) {
+      this.debouncedFn = _.debounce(() => {
+        this.props.onTextChanged(event.target.value);
+      }, 300);
+    }
+    this.debouncedFn();
   };
 }

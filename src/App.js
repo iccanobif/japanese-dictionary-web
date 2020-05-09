@@ -3,7 +3,7 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import DebouncingTextbox from "./DebouncingTextbox"
+import DebouncingTextbox from "./DebouncingTextbox";
 
 export default class App extends Component {
   constructor(props) {
@@ -26,7 +26,10 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <form className="SearchForm">
+        <form
+          className="SearchForm"
+          onSubmit={(event) => event.preventDefault()}
+        >
           <label>部首検索：</label>
           <DebouncingTextbox onTextChanged={this.handleRadicalChange} />
           <Spinner visible={this.state.radicalsQuerying} />
