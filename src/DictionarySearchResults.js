@@ -23,7 +23,7 @@ export class DictionarySearchResults extends Component {
 
   render() {
     if (this.props.results.length === 0)
-      return <div>一致する結果はありません</div>;
+      return <></>;
 
     return (
       <>

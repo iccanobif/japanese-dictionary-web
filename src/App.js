@@ -33,6 +33,7 @@ export default class App extends Component {
           <label>部首検索：</label>
           <DebouncingTextbox
             onDebouncedChange={this.handleRadicalDebouncedChange}
+            placeholder="英語で部首の名前を入力して下さい"
           />
           <Spinner visible={this.state.radicalsQuerying} />
         </form>
@@ -47,6 +48,7 @@ export default class App extends Component {
             value={this.state.dictionaryQuery}
             onChange={this.handleDictionaryChange}
             onDebouncedChange={this.handleDictionaryDebouncedChange}
+            placeholder="言葉や文章を入力して下さい"
           />
           <Spinner visible={this.state.dictionaryQuerying} />
         </form>
@@ -58,7 +60,10 @@ export default class App extends Component {
   }
 
   doDictionaryQuery = (query) => {
-    if (!query) return;
+    if (!query) {
+      this.setState({dictionaryQueryResults: []})
+      return
+    };
 
     this.setState({ dictionaryQuerying: true });
     fetch("https://japdictapi.herokuapp.com/sentence/" + query)
