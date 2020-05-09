@@ -3,7 +3,7 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import DebouncingTextbox from "./DebouncingTextbox";
+import DebouncingTextbox, { otherAttempt } from "./DebouncingTextbox";
 
 export default class App extends Component {
   constructor(props) {
@@ -18,9 +18,12 @@ export default class App extends Component {
   }
 
   appendKanjiToQuery = (kanji) => {
-    this.setState((state) => ({
-      dictionaryQuery: state.dictionaryQuery + kanji,
-    }));
+    this.setState((state) => {
+      this.doDictionaryQuery(state.dictionaryQuery + kanji);
+      return {
+        dictionaryQuery: state.dictionaryQuery + kanji,
+      };
+    });
   };
 
   render() {
@@ -31,7 +34,9 @@ export default class App extends Component {
           onSubmit={(event) => event.preventDefault()}
         >
           <label>部首検索：</label>
-          <DebouncingTextbox onTextChanged={this.handleRadicalChange} />
+          <DebouncingTextbox
+            onDebouncedChange={this.handleRadicalDebouncedChange}
+          />
           <Spinner visible={this.state.radicalsQuerying} />
         </form>
         <RadicalSearchResults
@@ -39,14 +44,16 @@ export default class App extends Component {
           kanjiClickedCallback={this.appendKanjiToQuery}
         ></RadicalSearchResults>
 
-        <form onSubmit={this.handleDictionarySubmit} className="SearchForm">
+        <form
+          onSubmit={(event) => event.preventDefault()}
+          className="SearchForm"
+        >
           <label>辞典検索：</label>
-          <input
-            type="text"
+          <DebouncingTextbox
             value={this.state.dictionaryQuery}
             onChange={this.handleDictionaryChange}
+            onDebouncedChange={this.handleDictionaryDebouncedChange}
           />
-          <input type="submit" value="検索"></input>
           <Spinner visible={this.state.dictionaryQuerying} />
         </form>
         <DictionarySearchResults
@@ -83,13 +90,12 @@ export default class App extends Component {
     this.setState({ dictionaryQuery: event.target.value });
   };
 
-  handleDictionarySubmit = (event) => {
-    this.doDictionaryQuery(this.state.dictionaryQuery);
-    event.preventDefault();
+  handleDictionaryDebouncedChange = (text) => {
+    this.doDictionaryQuery(text);
   };
 
-  handleRadicalChange = (query) => {
-    this.doRadicalQuery(query);
+  handleRadicalDebouncedChange = (text) => {
+    this.doRadicalQuery(text);
   };
 
   doRadicalQuery = (query) => {

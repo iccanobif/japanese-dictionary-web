@@ -11,14 +11,18 @@ export default class DebouncingTextbox extends Component {
   }
 
   render() {
-    return <input type="text" onChange={this.handleTextChange} />;
+    const { onDebouncedChange, onChange, ...otherProps } = this.props;
+    return (
+      <input type="text" onChange={this.handleTextChange} {...otherProps} />
+    );
   }
 
   handleTextChange = async (event) => {
+    if (this.props.onChange) this.props.onChange(event);
     event.persist();
     if (!this.debouncedFn) {
       this.debouncedFn = _.debounce(() => {
-        this.props.onTextChanged(event.target.value);
+        this.props.onDebouncedChange(event.target.value);
       }, 300);
     }
     this.debouncedFn();
