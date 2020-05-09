@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./DictionarySearchResults.css";
 
 function generateInitialState(props) {
   return {
@@ -28,6 +29,7 @@ export class DictionarySearchResults extends Component {
       <>
         <WordList
           words={this.props.results.map((r) => r.word)}
+          selectedWordIndex={this.state.selectedWordIndex}
           onWordSelected={this.handleWordClick}
         ></WordList>
         {this.state.selectedWordIndex == null ? null : (
@@ -49,19 +51,29 @@ export class DictionarySearchResults extends Component {
 class WordList extends Component {
   render() {
     const words = this.props.words;
+    const selectedWordIndex = this.props.selectedWordIndex;
+
     return (
-      <div>
-        {words.map((w, i) => (
-          <button key={i} value={i} onClick={this.handleWordClick}>
+      <div className="word-list">
+        {words.map((w, i) => {
+          return (<button
+            key={i}
+            value={i}
+            onClick={this.handleWordClick}
+            className={
+              "link-button " + (i === selectedWordIndex ? "selected-word" : "")
+            }
+          >
             {w}
-          </button>
-        ))}
+          </button>);
+        })}
       </div>
     );
   }
 
   handleWordClick = (event) => {
-    this.props.onWordSelected(event.target.value);
+    const index = Number.parseInt(event.target.value)
+    this.props.onWordSelected(index);
   };
 }
 

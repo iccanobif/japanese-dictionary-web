@@ -1,0 +1,9 @@
+.word-list button 
+{
+  margin-right: 2px;
+}
+
+.word-list .selected-word
+{
+  font-weight: bold;
+}

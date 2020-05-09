@@ -3,7 +3,7 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import DebouncingTextbox, { otherAttempt } from "./DebouncingTextbox";
+import DebouncingTextbox from "./DebouncingTextbox";
 
 export default class App extends Component {
   constructor(props) {
@@ -29,10 +29,7 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <form
-          className="SearchForm"
-          onSubmit={(event) => event.preventDefault()}
-        >
+        <form onSubmit={(event) => event.preventDefault()}>
           <label>部首検索：</label>
           <DebouncingTextbox
             onDebouncedChange={this.handleRadicalDebouncedChange}
@@ -44,10 +41,7 @@ export default class App extends Component {
           kanjiClickedCallback={this.appendKanjiToQuery}
         ></RadicalSearchResults>
 
-        <form
-          onSubmit={(event) => event.preventDefault()}
-          className="SearchForm"
-        >
+        <form onSubmit={(event) => event.preventDefault()}>
           <label>辞典検索：</label>
           <DebouncingTextbox
             value={this.state.dictionaryQuery}
@@ -99,7 +93,12 @@ export default class App extends Component {
   };
 
   doRadicalQuery = (query) => {
-    if (!query) return;
+    if (!query) {
+      this.setState({
+        radicalsQueryResults: null,
+      });
+      return;
+    }
 
     this.setState({ radicalsQuerying: true });
     fetch("https://japdictapi.herokuapp.com/kanji-by-radical/" + query)
