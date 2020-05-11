@@ -34,6 +34,7 @@ export default class App extends Component {
           <DebouncingTextbox
             onDebouncedChange={this.handleRadicalDebouncedChange}
             placeholder="英語で部首の名前を入力して下さい"
+            tabIndex={1}
           />
           <Spinner visible={this.state.radicalsQuerying} />
         </form>
@@ -49,6 +50,7 @@ export default class App extends Component {
             onChange={this.handleDictionaryChange}
             onDebouncedChange={this.handleDictionaryDebouncedChange}
             placeholder="言葉や文章を入力して下さい"
+            tabIndex={2}
           />
           <Spinner visible={this.state.dictionaryQuerying} />
         </form>
