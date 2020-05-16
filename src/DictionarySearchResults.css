@@ -8,6 +8,11 @@
   font-weight: bold;
 }
 
+ul
+{
+  list-style: none;
+}
+
 /* .dictionary-entry
 {
   writing-mode: vertical-rl;
