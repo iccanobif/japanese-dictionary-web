@@ -104,14 +104,25 @@ class DictionaryEntry extends Component {
       <span key={i}>{lemma}</span>
     ));
 
-    const glosses = this.props.showEnglishGlosses
-      ? this.props.result.englishGlosses
-      : this.props.result.japaneseGlosses
+    let glosses;
+
+    if (this.props.result.englishGlosses.length === 0)
+      glosses = this.props.result.japaneseGlosses;
+    else if (this.props.result.japaneseGlosses.length === 0)
+      glosses = this.props.result.englishGlosses;
+    else
+      glosses = this.props.showEnglishGlosses
+        ? this.props.result.englishGlosses
+        : this.props.result.japaneseGlosses;
 
     return (
       <div className="dictionary-entry">
         {lemmas}
-        <ul>{glosses.map((gloss, i) => <li key={i}>{gloss}</li>)}</ul>
+        <ul>
+          {glosses.map((gloss, i) => (
+            <li key={i}>{gloss}</li>
+          ))}
+        </ul>
       </div>
     );
   }
