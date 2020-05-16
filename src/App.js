@@ -14,27 +14,29 @@ export default class App extends Component {
       dictionaryQuerying: false,
       radicalsQueryResults: null,
       radicalsQuerying: false,
+      showEnglishGlosses: false,
     };
   }
-
-  appendKanjiToQuery = (kanji) => {
-    this.setState((state) => {
-      this.doDictionaryQuery(state.dictionaryQuery + kanji);
-      return {
-        dictionaryQuery: state.dictionaryQuery + kanji,
-      };
-    });
-  };
 
   render() {
     return (
       <div className="App">
+        <header>
+          <div class="english-flag">
+            <label>英語：</label>
+            <input
+              type="checkbox"
+              onChange={this.handleEnglishFlagChange}
+            ></input>
+          </div>
+        </header>
         <form onSubmit={(event) => event.preventDefault()}>
           <label>部首検索：</label>
           <DebouncingTextbox
             onDebouncedChange={this.handleRadicalDebouncedChange}
             placeholder="英語で部首の名前を入力して下さい"
             tabIndex={1}
+            className="text-input"
           />
           <Spinner visible={this.state.radicalsQuerying} />
         </form>
@@ -50,22 +52,35 @@ export default class App extends Component {
             onChange={this.handleDictionaryChange}
             onDebouncedChange={this.handleDictionaryDebouncedChange}
             placeholder="言葉や文章を入力して下さい"
+            /*onKeyUp={this.updateSelectedWord}*/
+            /*onClick={this.updateSelectedWord}*/
+            /*onFocus={this.updateSelectedWord}*/
             tabIndex={2}
+            className="text-input"
           />
           <Spinner visible={this.state.dictionaryQuerying} />
         </form>
         <DictionarySearchResults
           results={this.state.dictionaryQueryResults}
+          showEnglishGlosses={this.state.showEnglishGlosses}
         ></DictionarySearchResults>
       </div>
     );
   }
 
+  appendKanjiToQuery = (kanji) => {
+    this.setState((state) => {
+      this.doDictionaryQuery(state.dictionaryQuery + kanji);
+      return {
+        dictionaryQuery: state.dictionaryQuery + kanji,
+      };
+    });
+  };
   doDictionaryQuery = (query) => {
     if (!query) {
-      this.setState({dictionaryQueryResults: []})
-      return
-    };
+      this.setState({ dictionaryQueryResults: [] });
+      return;
+    }
 
     this.setState({ dictionaryQuerying: true });
     fetch("https://japdictapi.herokuapp.com/sentence/" + query)
@@ -97,6 +112,12 @@ export default class App extends Component {
 
   handleRadicalDebouncedChange = (text) => {
     this.doRadicalQuery(text);
+  };
+
+  handleEnglishFlagChange = (event) => {
+    this.setState({
+      showEnglishGlosses: event.target.checked,
+    });
   };
 
   doRadicalQuery = (query) => {

@@ -6,12 +6,17 @@
   color: #EBDDDC;
 }
 
+header {
+  display: flex;
+  justify-content: right;
+}
+
 form {
   justify-content: center;
   display: flex;
 }
 
-form input {
+form .text-input {
   width: 400px;
 }
 
