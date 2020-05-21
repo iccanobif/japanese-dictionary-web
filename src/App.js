@@ -4,6 +4,8 @@ import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
 import DebouncingTextbox from "./DebouncingTextbox";
+import { store } from "./redux/store";
+import { changeDictionarySearchInput } from "./redux/actions";
 
 export default class App extends Component {
   constructor(props) {
@@ -22,7 +24,7 @@ export default class App extends Component {
     return (
       <div className="App">
         <header>
-          <div class="english-flag">
+          <div className="english-flag">
             <label>英語：</label>
             <input
               type="checkbox"
@@ -104,6 +106,8 @@ export default class App extends Component {
 
   handleDictionaryChange = (event) => {
     this.setState({ dictionaryQuery: event.target.value });
+
+    store.dispatch(changeDictionarySearchInput(event.target.value, event.target.selectionStart));
   };
 
   handleDictionaryDebouncedChange = (text) => {
