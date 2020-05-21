@@ -7,7 +7,7 @@ export const Actions = {
 export function changeDictionarySearchInput(text, position) {
   return {
     type: Actions.CHANGE_DICTIONARY_SEARCH_INPUT,
-    text: text,
-    position: position,
+    text,
+    position,
   };
 }
