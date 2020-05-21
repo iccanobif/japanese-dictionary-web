@@ -4,10 +4,10 @@ import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
 import DebouncingTextbox from "./DebouncingTextbox";
-import { store } from "./redux/store";
 import { changeDictionarySearchInput } from "./redux/actions";
+import { connect } from 'react-redux'
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -107,7 +107,7 @@ export default class App extends Component {
   handleDictionaryChange = (event) => {
     this.setState({ dictionaryQuery: event.target.value });
 
-    store.dispatch(changeDictionarySearchInput(event.target.value, event.target.selectionStart));
+    this.props.dispatch(changeDictionarySearchInput(event.target.value, event.target.selectionStart));
   };
 
   handleDictionaryDebouncedChange = (text) => {
@@ -149,3 +149,5 @@ export default class App extends Component {
       });
   };
 }
+
+export default connect()(App)
