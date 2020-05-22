@@ -3,7 +3,6 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import DebouncingTextbox from "./DebouncingTextbox";
 import { changeDictionarySearchInput } from "./redux/actions";
 import { connect } from "react-redux";
 
@@ -31,8 +30,8 @@ class AppPresentation extends Component {
         </header>
         <form onSubmit={(event) => event.preventDefault()}>
           <label>部首検索：</label>
-          <DebouncingTextbox
-            onDebouncedChange={this.handleRadicalDebouncedChange}
+          <input type="text"
+            onChange={this.handleRadicalDebouncedChange}
             placeholder="英語で部首の名前を入力して下さい"
             tabIndex={1}
             className="text-input"
@@ -76,8 +75,8 @@ class AppPresentation extends Component {
     // TODO
   };
   
-  handleRadicalDebouncedChange = (text) => {
-    this.doRadicalQuery(text);
+  handleRadicalDebouncedChange = (ev) => {
+    this.doRadicalQuery(ev.target.value);
   };
 
   handleEnglishFlagChange = (event) => {
