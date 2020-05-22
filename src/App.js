@@ -11,9 +11,6 @@ class AppPresentation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // dictionaryQueryResults: [],
-      // dictionaryQuery: "",
-      // dictionaryQuerying: false,
       radicalsQueryResults: null,
       radicalsQuerying: false,
       showEnglishGlosses: false,
@@ -49,7 +46,8 @@ class AppPresentation extends Component {
 
         <form onSubmit={(event) => event.preventDefault()}>
           <label>辞典検索：</label>
-          <DebouncingTextbox
+
+          <input type="text"
             value={this.props.dictionaryQuery}
             onChange={(ev) =>
               this.props.onDictionaryQueryChange(
@@ -57,7 +55,6 @@ class AppPresentation extends Component {
                 ev.target.selectionStart
               )
             }
-            onDebouncedChange={this.handleDictionaryDebouncedChange}
             placeholder="言葉や文章を入力して下さい"
             /*onKeyUp={this.updateSelectedWord}*/
             /*onClick={this.updateSelectedWord}*/
@@ -76,43 +73,9 @@ class AppPresentation extends Component {
   }
 
   appendKanjiToQuery = (kanji) => {
-    // this.setState((state) => {
-    //   this.doDictionaryQuery(state.dictionaryQuery + kanji);
-    //   return {
-    //     dictionaryQuery: state.dictionaryQuery + kanji,
-    //   };
-    // });
+    // TODO
   };
-  doDictionaryQuery = (query) => {
-    if (!query) {
-      this.setState({ dictionaryQueryResults: [] });
-      return;
-    }
-
-    this.setState({ dictionaryQuerying: true });
-    fetch("https://japdictapi.herokuapp.com/sentence/" + query)
-      .then((result) => {
-        if (result.ok)
-          result.json().then((json) => {
-            this.setState({
-              dictionaryQueryResults: json,
-            });
-          });
-        else {
-          alert("error");
-          console.error(result.statusText);
-        }
-        this.setState({ dictionaryQuerying: false });
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  };
-
-  handleDictionaryDebouncedChange = (text) => {
-    this.doDictionaryQuery(text);
-  };
-
+  
   handleRadicalDebouncedChange = (text) => {
     this.doRadicalQuery(text);
   };
@@ -151,13 +114,8 @@ class AppPresentation extends Component {
 
 // Container:
 
-// dictionaryQueryResults: [],
-// dictionaryQuery: "",
-// dictionaryQuerying: false,
-
 const mapStateToProps = (state) => {
   return {
-    // todos: getVisibleTodos(state.todos, state.visibilityFilter)
     dictionaryQueryResults: state.dictionaryQueryResults,
     dictionaryQuery: state.dictionaryQuery,
     dictionaryQuerying: state.dictionaryQuerying,
@@ -171,15 +129,5 @@ const mapDispatchToProps = (dispatch) => {
     
   };
 };
-
-// handleDictionaryChange = (event) => {
-//   this.setState({ dictionaryQuery: event.target.value });
-//   this.props.dispatch(
-//     changeDictionarySearchInput(
-//       event.target.value,
-//       event.target.selectionStart
-//     )
-//   );
-// };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppPresentation);
