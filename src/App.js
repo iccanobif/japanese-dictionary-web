@@ -5,15 +5,15 @@ import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
 import DebouncingTextbox from "./DebouncingTextbox";
 import { changeDictionarySearchInput } from "./redux/actions";
-import { connect } from 'react-redux'
+import { connect } from "react-redux";
 
-class App extends Component {
+class AppPresentation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dictionaryQueryResults: [],
-      dictionaryQuery: "",
-      dictionaryQuerying: false,
+      // dictionaryQueryResults: [],
+      // dictionaryQuery: "",
+      // dictionaryQuerying: false,
       radicalsQueryResults: null,
       radicalsQuerying: false,
       showEnglishGlosses: false,
@@ -50,8 +50,13 @@ class App extends Component {
         <form onSubmit={(event) => event.preventDefault()}>
           <label>辞典検索：</label>
           <DebouncingTextbox
-            value={this.state.dictionaryQuery}
-            onChange={this.handleDictionaryChange}
+            value={this.props.dictionaryQuery}
+            onChange={(ev) =>
+              this.props.onDictionaryQueryChange(
+                ev.target.value,
+                ev.target.selectionStart
+              )
+            }
             onDebouncedChange={this.handleDictionaryDebouncedChange}
             placeholder="言葉や文章を入力して下さい"
             /*onKeyUp={this.updateSelectedWord}*/
@@ -60,10 +65,10 @@ class App extends Component {
             tabIndex={2}
             className="text-input"
           />
-          <Spinner visible={this.state.dictionaryQuerying} />
+          <Spinner visible={this.props.dictionaryQuerying} />
         </form>
         <DictionarySearchResults
-          results={this.state.dictionaryQueryResults}
+          results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
         ></DictionarySearchResults>
       </div>
@@ -71,12 +76,12 @@ class App extends Component {
   }
 
   appendKanjiToQuery = (kanji) => {
-    this.setState((state) => {
-      this.doDictionaryQuery(state.dictionaryQuery + kanji);
-      return {
-        dictionaryQuery: state.dictionaryQuery + kanji,
-      };
-    });
+    // this.setState((state) => {
+    //   this.doDictionaryQuery(state.dictionaryQuery + kanji);
+    //   return {
+    //     dictionaryQuery: state.dictionaryQuery + kanji,
+    //   };
+    // });
   };
   doDictionaryQuery = (query) => {
     if (!query) {
@@ -102,12 +107,6 @@ class App extends Component {
       .catch((err) => {
         alert(err);
       });
-  };
-
-  handleDictionaryChange = (event) => {
-    this.setState({ dictionaryQuery: event.target.value });
-
-    this.props.dispatch(changeDictionarySearchInput(event.target.value, event.target.selectionStart));
   };
 
   handleDictionaryDebouncedChange = (text) => {
@@ -150,4 +149,37 @@ class App extends Component {
   };
 }
 
-export default connect()(App)
+// Container:
+
+// dictionaryQueryResults: [],
+// dictionaryQuery: "",
+// dictionaryQuerying: false,
+
+const mapStateToProps = (state) => {
+  return {
+    // todos: getVisibleTodos(state.todos, state.visibilityFilter)
+    dictionaryQueryResults: state.dictionaryQueryResults,
+    dictionaryQuery: state.dictionaryQuery,
+    dictionaryQuerying: state.dictionaryQuerying,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onDictionaryQueryChange: (text, position) =>
+      dispatch(changeDictionarySearchInput(text, position)),
+    
+  };
+};
+
+// handleDictionaryChange = (event) => {
+//   this.setState({ dictionaryQuery: event.target.value });
+//   this.props.dispatch(
+//     changeDictionarySearchInput(
+//       event.target.value,
+//       event.target.selectionStart
+//     )
+//   );
+// };
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppPresentation);
