@@ -48,82 +48,71 @@ export class DictionarySearchResults extends Component {
   };
 }
 
-class WordList extends Component {
-  render() {
-    const words = this.props.words;
-    const selectedWordIndex = this.props.selectedWordIndex;
+function WordList(props) {
+  const words = props.words;
+  const selectedWordIndex = props.selectedWordIndex;
 
-    return (
-      <div className="word-list">
-        {words.map((w, i) => {
-          return (
-            <button
-              key={i}
-              value={i}
-              onClick={this.handleWordClick}
-              className={
-                "link-button " +
-                (i === selectedWordIndex ? "selected-word" : "")
-              }
-            >
-              {w}
-            </button>
-          );
-        })}
-      </div>
-    );
-  }
-
-  handleWordClick = (event) => {
-    const index = Number.parseInt(event.target.value);
-    this.props.onWordSelected(index);
-  };
+  return (
+    <div className="word-list">
+      {words.map((w, i) => {
+        return (
+          <button
+            key={i}
+            value={i}
+            onClick={(event) => {
+              props.onWordSelected(Number.parseInt(event.target.value));
+            }}
+            className={
+              "link-button " + (i === selectedWordIndex ? "selected-word" : "")
+            }
+          >
+            {w}
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
-class WordResults extends Component {
-  render() {
-    if (this.props.results.length === 0)
-      return <div>一致する結果はありません</div>;
+function WordResults(props) {
+  if (props.results.length === 0) return <div>一致する結果はありません</div>;
 
-    const list = this.props.results.map((r, i) => {
-      return (
-        <DictionaryEntry
-          key={i}
-          result={r}
-          showEnglishGlosses={this.props.showEnglishGlosses}
-        />
-      );
-    });
-    return <>{list}</>;
-  }
+  const list = props.results.map((r, i) => {
+    return (
+      <DictionaryEntry
+        key={i}
+        result={r}
+        showEnglishGlosses={props.showEnglishGlosses}
+      />
+    );
+  });
+  return <>{list}</>;
 }
 
-class DictionaryEntry extends Component {
-  render() {
-    const lemmas = this.props.result.lemmas.map((lemma, i) => (
-      <span key={i}>{lemma}</span>
-    ));
+function DictionaryEntry(props) {
+  const lemmas = props.result.lemmas.map((lemma, i) => (
+    <span key={i}>{lemma}</span>
+  ));
 
-    let glosses;
+  let glosses;
 
-    if (this.props.result.englishGlosses.length === 0)
-      glosses = this.props.result.japaneseGlosses;
-    else if (this.props.result.japaneseGlosses.length === 0)
-      glosses = this.props.result.englishGlosses;
-    else
-      glosses = this.props.showEnglishGlosses
-        ? this.props.result.englishGlosses
-        : this.props.result.japaneseGlosses;
+  if (props.result.englishGlosses.length === 0)
+    glosses = props.result.japaneseGlosses;
+  else if (props.result.japaneseGlosses.length === 0)
+    glosses = props.result.englishGlosses;
+  else
+    glosses = props.showEnglishGlosses
+      ? props.result.englishGlosses
+      : props.result.japaneseGlosses;
 
-    return (
-      <div className="dictionary-entry">
-        {lemmas}
-        <ul>
-          {glosses.map((gloss, i) => (
-            <li key={i}>{gloss}</li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+  return (
+    <div className="dictionary-entry">
+      {lemmas}
+      <ul>
+        {glosses.map((gloss, i) => (
+          <li key={i}>{gloss}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
