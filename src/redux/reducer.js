@@ -57,7 +57,7 @@ const radicalsInitialState = {
 };
 
 function radicals(state = radicalsInitialState, action) {
-  return state
+  return state;
 }
 
 const mainReducer = combineReducers({
