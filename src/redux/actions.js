@@ -8,7 +8,6 @@ export const DICTIONARY_START_FETCH = "DICTIONARY_START_FETCH";
 export const RADICAL_CHANGE_SEARCH_INPUT = "RADICAL_CHANGE_SEARCH_INPUT";
 export const RADICAL_RESULT_RECEIVED_OK = "RADICAL_RESULT_RECEIVED_OK";
 export const RADICAL_RESULT_RECEIVED_FAIL = "RADICAL_RESULT_RECEIVED_FAIL";
-export const RADICAL_APPEND_KANJI = "RADICAL_APPEND_KANJI";
 export const RADICAL_START_FETCH = "RADICAL_START_FETCH";
 
 export function appendKanji(kanji) {
@@ -72,7 +71,38 @@ export function changeRadicalSearchInput(text) {
 }
 
 export function fetchRadicalResults() {
-  return (dispatch, getState) => {
-    // const text = getState().dictionary.currentQueryString;
+  return async (dispatch, getState) => {
+    try {
+      const text = getState().radicals.currentQueryString;
+
+      if (!text)
+        return {
+          type: RADICAL_RESULT_RECEIVED_OK,
+          results: [],
+        };
+
+      dispatch({ type: RADICAL_START_FETCH });
+
+      const result = await fetch(
+        "https://japdictapi.herokuapp.com/kanji-by-radical/" + text
+      );
+
+      if (result.ok)
+        dispatch({
+          type: RADICAL_RESULT_RECEIVED_OK,
+          results: await result.json(),
+        });
+      else
+        dispatch({
+          type: RADICAL_RESULT_RECEIVED_FAIL,
+          error: result.statusText,
+        });
+    } catch (error) {
+      dispatch({
+        type: RADICAL_RESULT_RECEIVED_FAIL,
+        error,
+      });
+    }
   };
+
 }

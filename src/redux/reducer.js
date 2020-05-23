@@ -5,6 +5,10 @@ import {
   DICTIONARY_RESULT_RECEIVED_OK,
   DICTIONARY_RESULT_RECEIVED_FAIL,
   DICTIONARY_APPEND_KANJI,
+  RADICAL_CHANGE_SEARCH_INPUT,
+  RADICAL_RESULT_RECEIVED_OK,
+  RADICAL_RESULT_RECEIVED_FAIL,
+  RADICAL_START_FETCH,
 } from "./actions";
 
 const initialDictionaryState = {
@@ -54,10 +58,32 @@ function dictionary(state = initialDictionaryState, action) {
 const radicalsInitialState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
   isQueryRunning: false, // if it's true, ignore new keystrokes
+  queryResults: [],
 };
 
 function radicals(state = radicalsInitialState, action) {
-  return state;
+  switch (action.type) {
+    case RADICAL_CHANGE_SEARCH_INPUT:
+      return Object.assign({}, state, {
+        currentQueryString: action.text,
+      });
+    case RADICAL_RESULT_RECEIVED_OK:
+      return Object.assign({}, state, {
+        isQueryRunning: false,
+        queryResults: action.results,
+      });
+    case RADICAL_RESULT_RECEIVED_FAIL:
+      return Object.assign({}, state, {
+        isQueryRunning: false,
+        error: action.error,
+      });
+    case RADICAL_START_FETCH:
+      return Object.assign({}, state, {
+        isQueryRunning: true,
+      });
+    default:
+      return state;
+  }
 }
 
 const mainReducer = combineReducers({

@@ -3,15 +3,19 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import { changeDictionarySearchInput, appendKanji, fetchDictionaryResults } from "./redux/actions";
+import {
+  changeDictionarySearchInput,
+  appendKanji,
+  fetchDictionaryResults,
+  changeRadicalSearchInput,
+  fetchRadicalResults,
+} from "./redux/actions";
 import { connect } from "react-redux";
 
 class AppPresentation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      radicalsQueryResults: null,
-      radicalsQuerying: false,
       showEnglishGlosses: false,
     };
   }
@@ -32,15 +36,15 @@ class AppPresentation extends Component {
           <label>部首検索：</label>
           <input
             type="text"
-            onChange={this.handleRadicalDebouncedChange}
+            onChange={(ev) => this.props.onRadicalQueryChange(ev.target.value)}
             placeholder="英語で部首の名前を入力して下さい"
             tabIndex={1}
             className="text-input"
           />
-          <Spinner visible={this.state.radicalsQuerying} />
+          <Spinner visible={this.props.radicalsIsQueryRunning} />
         </form>
         <RadicalSearchResults
-          results={this.state.radicalsQueryResults}
+          results={this.props.radicalsQueryResults}
           kanjiClickedCallback={this.props.appendKanjiToQuery}
         ></RadicalSearchResults>
 
@@ -73,61 +77,37 @@ class AppPresentation extends Component {
     );
   }
 
-  handleRadicalDebouncedChange = (ev) => {
-    this.doRadicalQuery(ev.target.value);
-  };
-
   handleEnglishFlagChange = (event) => {
     this.setState({
       showEnglishGlosses: event.target.checked,
     });
   };
-
-  doRadicalQuery = (query) => {
-    if (!query) {
-      this.setState({
-        radicalsQueryResults: null,
-      });
-      return;
-    }
-
-    this.setState({ radicalsQuerying: true });
-    fetch("https://japdictapi.herokuapp.com/kanji-by-radical/" + query)
-      .then((result) => {
-        if (result.ok)
-          result.json().then((json) => {
-            this.setState({
-              radicalsQueryResults: json,
-            });
-          });
-        else alert("error");
-        this.setState({ radicalsQuerying: false });
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  };
 }
-
-// Container:
 
 const mapStateToProps = (state) => {
   return {
     dictionaryQueryResults: state.dictionary.queryResults,
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
+
+    radicalsQueryResults: state.radicals.queryResults,
+    radicalsIsQueryRunning: state.radicals.isQueryRunning,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onDictionaryQueryChange: (text, position) => {
-      dispatch(changeDictionarySearchInput(text, position))
-      dispatch(fetchDictionaryResults())
+      dispatch(changeDictionarySearchInput(text, position));
+      dispatch(fetchDictionaryResults());
     },
     appendKanjiToQuery: (kanji) => {
       dispatch(appendKanji(kanji));
-      dispatch(fetchDictionaryResults())
+      dispatch(fetchDictionaryResults());
+    },
+    onRadicalQueryChange: (text) => {
+      dispatch(changeRadicalSearchInput(text));
+      dispatch(fetchRadicalResults());
     },
   };
 };
