@@ -58,7 +58,7 @@ function dictionary(state = initialDictionaryState, action) {
 const radicalsInitialState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
   isQueryRunning: false, // if it's true, ignore new keystrokes
-  queryResults: [],
+  queryResults: null, // null means that the page has just been opened and no search has been done yet
 };
 
 function radicals(state = radicalsInitialState, action) {
