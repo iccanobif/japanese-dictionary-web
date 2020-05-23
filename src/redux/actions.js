@@ -27,8 +27,7 @@ export function changeDictionarySearchInput(text, position) {
 export function fetchDictionaryResults() {
   return (dispatch, getState) => {
 
-    const text = getState().currentQueryString;
-    // console.log("kek", getState());
+    const text = getState().dictionaryCurrentQueryString;
 
     if (!text)
       return {

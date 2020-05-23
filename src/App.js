@@ -49,7 +49,7 @@ class AppPresentation extends Component {
 
           <input
             type="text"
-            value={this.props.dictionaryQuery}
+            value={this.props.dictionaryCurrentQueryString}
             onChange={(ev) =>
               this.props.onDictionaryQueryChange(
                 ev.target.value,
@@ -63,7 +63,7 @@ class AppPresentation extends Component {
             tabIndex={2}
             className="text-input"
           />
-          <Spinner visible={this.props.dictionaryQuerying} />
+          <Spinner visible={this.props.dictionaryIsQueryRunning} />
         </form>
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
@@ -114,8 +114,8 @@ class AppPresentation extends Component {
 const mapStateToProps = (state) => {
   return {
     dictionaryQueryResults: state.dictionaryQueryResults,
-    dictionaryQuery: state.dictionaryQuery,
-    dictionaryQuerying: state.dictionaryQuerying,
+    dictionaryCurrentQueryString: state.dictionaryCurrentQueryString,
+    dictionaryIsQueryRunning: state.dictionaryIsQueryRunning,
   };
 };
 
