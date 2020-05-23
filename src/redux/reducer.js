@@ -1,5 +1,11 @@
-import { Actions } from "./actions";
 import { combineReducers } from "redux";
+import {
+  DICTIONARY_CHANGE_SEARCH_INPUT,
+  DICTIONARY_START_FETCH,
+  DICTIONARY_RESULT_RECEIVED_OK,
+  DICTIONARY_RESULT_RECEIVED_FAIL,
+  DICTIONARY_APPEND_KANJI,
+} from "./actions";
 
 const initialDictionaryState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
@@ -10,36 +16,32 @@ const initialDictionaryState = {
   isWaitingForDebouncer: false, // launch the setTimeout only if this is false and there are no pending fetches
 };
 
-const initialState = {
-  dictionary: initialDictionaryState,
-};
-
 function dictionary(state = initialDictionaryState, action) {
   switch (action.type) {
-    case Actions.DICTIONARY_CHANGE_SEARCH_INPUT:
+    case DICTIONARY_CHANGE_SEARCH_INPUT:
       return Object.assign({}, state, {
         currentQueryString: action.text,
         currentCursorPosition: action.position,
       });
 
-    case Actions.DICTIONARY_START_FETCH:
+    case DICTIONARY_START_FETCH:
       return Object.assign({}, state, {
         isQueryRunning: true,
       });
 
-    case Actions.DICTIONARY_RESULT_RECEIVED_OK:
+    case DICTIONARY_RESULT_RECEIVED_OK:
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
       });
 
-    case Actions.DICTIONARY_RESULT_RECEIVED_FAIL:
+    case DICTIONARY_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
         error: action.error,
       });
 
-    case Actions.DICTIONARY_APPEND_KANJI:
+    case DICTIONARY_APPEND_KANJI:
       return Object.assign({}, state, {
         currentQueryString: state.currentQueryString + action.kanji,
       });
@@ -49,8 +51,18 @@ function dictionary(state = initialDictionaryState, action) {
   }
 }
 
-const mainReducer = combineReducers({
-  dictionary
-})
+const radicalsInitialState = {
+  currentQueryString: "", // always perfectly aligned with the actual state of the textbox
+  isQueryRunning: false, // if it's true, ignore new keystrokes
+};
 
-export default mainReducer
+function radicals(state = radicalsInitialState, action) {
+  return state
+}
+
+const mainReducer = combineReducers({
+  dictionary,
+  radicals,
+});
+
+export default mainReducer;

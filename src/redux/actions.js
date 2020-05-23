@@ -1,22 +1,19 @@
-export const Actions = {
-  DICTIONARY_CHANGE_SEARCH_INPUT: 1,
-  DICTIONARY_RESULT_RECEIVED_OK: 2,
-  DICTIONARY_RESULT_RECEIVED_FAIL: 3,
-  DICTIONARY_APPEND_KANJI: 4,
-  DICTIONARY_START_FETCH: 5,
-  CHANGE_RADICAL_SEARCH_INPUT: 6,
-};
+export const DICTIONARY_CHANGE_SEARCH_INPUT = "DICTIONARY_CHANGE_SEARCH_INPUT";
+export const DICTIONARY_RESULT_RECEIVED_OK = "DICTIONARY_RESULT_RECEIVED_OK";
+export const DICTIONARY_RESULT_RECEIVED_FAIL = "DICTIONARY_RESULT_RECEIVED_FAIL";
+export const DICTIONARY_APPEND_KANJI = "DICTIONARY_APPEND_KANJI";
+export const DICTIONARY_START_FETCH = "DICTIONARY_START_FETCH";
 
 export function appendKanji(kanji) {
   return {
-    type: Actions.DICTIONARY_APPEND_KANJI,
+    type: DICTIONARY_APPEND_KANJI,
     kanji,
   };
 }
 
 export function changeDictionarySearchInput(text, position) {
   return {
-    type: Actions.DICTIONARY_CHANGE_SEARCH_INPUT,
+    type: DICTIONARY_CHANGE_SEARCH_INPUT,
     text,
     position,
   };
@@ -31,30 +28,30 @@ export function fetchDictionaryResults() {
 
     if (!text)
       return {
-        type: Actions.DICTIONARY_RESULT_RECEIVED_OK,
+        type: DICTIONARY_RESULT_RECEIVED_OK,
         results: [],
       };
 
-    dispatch({ type: Actions.DICTIONARY_START_FETCH });
+    dispatch({ type: DICTIONARY_START_FETCH });
 
     return fetch("https://japdictapi.herokuapp.com/sentence/" + text)
       .then((result) => {
         if (!result.ok)
           dispatch({
-            type: Actions.DICTIONARY_RESULT_RECEIVED_FAIL,
+            type: DICTIONARY_RESULT_RECEIVED_FAIL,
             error: result.statusText,
           });
         else
           result.json().then((json) => {
             dispatch({
-              type: Actions.DICTIONARY_RESULT_RECEIVED_OK,
+              type: DICTIONARY_RESULT_RECEIVED_OK,
               results: json,
             });
           });
       })
       .catch((error) => {
         dispatch({
-          type: Actions.DICTIONARY_RESULT_RECEIVED_FAIL,
+          type: DICTIONARY_RESULT_RECEIVED_FAIL,
           error,
         });
       });
