@@ -113,9 +113,9 @@ class AppPresentation extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    dictionaryQueryResults: state.dictionaryQueryResults,
-    dictionaryCurrentQueryString: state.dictionaryCurrentQueryString,
-    dictionaryIsQueryRunning: state.dictionaryIsQueryRunning,
+    dictionaryQueryResults: state.dictionary.queryResults,
+    dictionaryCurrentQueryString: state.dictionary.currentQueryString,
+    dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
   };
 };
 
