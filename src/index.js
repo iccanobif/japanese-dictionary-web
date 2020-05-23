@@ -7,10 +7,11 @@ import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import reducer from "./redux/reducer";
 import thunkMiddleware from "redux-thunk";
+import { createLogger } from "redux-logger"
 
 export const store = createStore(
   reducer,
-  applyMiddleware(thunkMiddleware)
+  applyMiddleware(thunkMiddleware, createLogger())
 );
 
 ReactDOM.render(

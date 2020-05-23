@@ -11,10 +11,14 @@ const initialState = {
 
 export default function mainReducer(state = initialState, action) {
   switch (action.type) {
-    case Actions.CHANGE_DICTIONARY_SEARCH_INPUT:
+    case Actions.DICTIONARY_CHANGE_SEARCH_INPUT:
       return Object.assign({}, state, {
         currentQueryString: action.text,
         currentCursorPosition: action.position,
+      });
+
+    case Actions.DICTIONARY_START_FETCH:
+      return Object.assign({}, state, {
         isQueryRunning: true,
       });
 
@@ -30,8 +34,10 @@ export default function mainReducer(state = initialState, action) {
         error: action.error,
       });
 
-    case Actions.CHANGE_RADICAL_SEARCH_INPUT:
-      return state;
+    case Actions.DICTIONARY_APPEND_KANJI:
+      return Object.assign({}, state, {
+        currentQueryString: state.currentQueryString + action.kanji,
+      });
 
     default:
       return state;

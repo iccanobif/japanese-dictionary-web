@@ -3,7 +3,7 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import { changeDictionarySearchInput } from "./redux/actions";
+import { changeDictionarySearchInput, appendKanji, fetchDictionaryResults } from "./redux/actions";
 import { connect } from "react-redux";
 
 class AppPresentation extends Component {
@@ -30,7 +30,8 @@ class AppPresentation extends Component {
         </header>
         <form onSubmit={(event) => event.preventDefault()}>
           <label>部首検索：</label>
-          <input type="text"
+          <input
+            type="text"
             onChange={this.handleRadicalDebouncedChange}
             placeholder="英語で部首の名前を入力して下さい"
             tabIndex={1}
@@ -40,13 +41,14 @@ class AppPresentation extends Component {
         </form>
         <RadicalSearchResults
           results={this.state.radicalsQueryResults}
-          kanjiClickedCallback={this.appendKanjiToQuery}
+          kanjiClickedCallback={this.props.appendKanjiToQuery}
         ></RadicalSearchResults>
 
         <form onSubmit={(event) => event.preventDefault()}>
           <label>辞典検索：</label>
 
-          <input type="text"
+          <input
+            type="text"
             value={this.props.dictionaryQuery}
             onChange={(ev) =>
               this.props.onDictionaryQueryChange(
@@ -71,10 +73,6 @@ class AppPresentation extends Component {
     );
   }
 
-  appendKanjiToQuery = (kanji) => {
-    // TODO
-  };
-  
   handleRadicalDebouncedChange = (ev) => {
     this.doRadicalQuery(ev.target.value);
   };
@@ -123,9 +121,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDictionaryQueryChange: (text, position) =>
-      dispatch(changeDictionarySearchInput(text, position)),
-    
+    onDictionaryQueryChange: (text, position) => {
+      dispatch(changeDictionarySearchInput(text, position))
+      dispatch(fetchDictionaryResults())
+    },
+    appendKanjiToQuery: (kanji) => {
+      dispatch(appendKanji(kanji));
+      dispatch(fetchDictionaryResults())
+    },
   };
 };
 

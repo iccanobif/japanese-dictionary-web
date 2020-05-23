@@ -1,17 +1,34 @@
 export const Actions = {
-  CHANGE_DICTIONARY_SEARCH_INPUT: 1,
+  DICTIONARY_CHANGE_SEARCH_INPUT: 1,
   DICTIONARY_RESULT_RECEIVED_OK: 2,
   DICTIONARY_RESULT_RECEIVED_FAIL: 3,
-  CHANGE_RADICAL_SEARCH_INPUT: 4,
+  DICTIONARY_APPEND_KANJI: 4,
+  DICTIONARY_START_FETCH: 5,
+  CHANGE_RADICAL_SEARCH_INPUT: 6,
 };
 
+export function appendKanji(kanji) {
+  return {
+    type: Actions.DICTIONARY_APPEND_KANJI,
+    kanji,
+  };
+}
+
 export function changeDictionarySearchInput(text, position) {
-  return (dispatch) => {
-    dispatch({
-      type: Actions.CHANGE_DICTIONARY_SEARCH_INPUT,
-      text,
-      position,
-    });
+  return {
+    type: Actions.DICTIONARY_CHANGE_SEARCH_INPUT,
+    text,
+    position,
+  };
+}
+
+// TODO check that there's no other fetch currently running
+
+export function fetchDictionaryResults() {
+  return (dispatch, getState) => {
+
+    const text = getState().currentQueryString;
+    // console.log("kek", getState());
 
     if (!text)
       return {
@@ -19,7 +36,7 @@ export function changeDictionarySearchInput(text, position) {
         results: [],
       };
 
-    // TODO check that there's no other fetch currently running
+    dispatch({ type: Actions.DICTIONARY_START_FETCH });
 
     return fetch("https://japdictapi.herokuapp.com/sentence/" + text)
       .then((result) => {
