@@ -54,16 +54,11 @@ class AppPresentation extends Component {
           <input
             type="text"
             value={this.props.dictionaryCurrentQueryString}
-            onChange={(ev) =>
-              this.props.onDictionaryQueryChange(
-                ev.target.value,
-                ev.target.selectionStart
-              )
-            }
+            onChange={this.onDictionaryQueryChanged}
             placeholder="言葉や文章を入力して下さい"
-            /*onKeyUp={this.updateSelectedWord}*/
-            /*onClick={this.updateSelectedWord}*/
-            /*onFocus={this.updateSelectedWord}*/
+            // onKeyUp={this.onDictionaryQueryChanged}
+            // onClick={this.onDictionaryQueryChanged}
+            // onFocus={this.onDictionaryQueryChanged}
             tabIndex={2}
             className="text-input"
           />
@@ -76,6 +71,13 @@ class AppPresentation extends Component {
       </div>
     );
   }
+
+  onDictionaryQueryChanged = (ev) => {
+    this.props.onDictionaryQueryChanged(
+      ev.target.value,
+      ev.target.selectionStart
+    );
+  };
 
   handleEnglishFlagChange = (event) => {
     this.setState({
@@ -97,7 +99,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDictionaryQueryChange: (text, position) => {
+    onDictionaryQueryChanged: (text, position) => {
       dispatch(changeDictionarySearchInput(text, position));
       dispatch(fetchDictionaryResults());
     },

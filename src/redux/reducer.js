@@ -15,6 +15,7 @@ const initialDictionaryState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
   currentCursorPosition: 0, // always perfectly aligned with the actual state of the textbox
   isQueryRunning: false, // if it's true, ignore new keystrokes
+  currentlyDisplayedQuery: "",
   queryResults: [],
   lastKeystrokeTime: 0, // when a setTimeout for debouncing finishes, i check that no new keys have been pressed in the meanwhile
   isWaitingForDebouncer: false, // launch the setTimeout only if this is false and there are no pending fetches
@@ -37,6 +38,7 @@ function dictionary(state = initialDictionaryState, action) {
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
+        currentlyDisplayedQuery: action.text,
       });
 
     case DICTIONARY_RESULT_RECEIVED_FAIL:

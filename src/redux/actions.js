@@ -25,35 +25,52 @@ export function changeDictionarySearchInput(text, position) {
   };
 }
 
-// TODO check that there's no other fetch currently running
-
 export function fetchDictionaryResults() {
   return async (dispatch, getState) => {
     try {
-      const text = getState().dictionary.currentQueryString;
+      let currentQueryString = null;
+      do {
+        let {
+          currentQueryString,
+          currentlyDisplayedQuery,
+          isQueryRunning,
+        } = getState().dictionary;
 
-      if (!text)
-        return {
-          type: DICTIONARY_RESULT_RECEIVED_OK,
-          results: [],
-        };
+        // No need to fetch anything if the text hasn't changed
+        if (currentQueryString === currentlyDisplayedQuery) return;
 
-      dispatch({ type: DICTIONARY_START_FETCH });
+        // Avoid launching a new query if there's another one currently running.
+        // When that other fetch() is over, it will be checked if in the meanwhile
+        // the query text was changed.
+        if (isQueryRunning) return;
 
-      const result = await fetch(
-        "https://japdictapi.herokuapp.com/sentence/" + text
-      );
+        if (!currentQueryString)
+          return {
+            type: DICTIONARY_RESULT_RECEIVED_OK,
+            results: [],
+          };
 
-      if (result.ok)
-        dispatch({
-          type: DICTIONARY_RESULT_RECEIVED_OK,
-          results: await result.json(),
-        });
-      else
-        dispatch({
-          type: DICTIONARY_RESULT_RECEIVED_FAIL,
-          error: result.statusText,
-        });
+        dispatch({ type: DICTIONARY_START_FETCH });
+
+        currentQueryString = getState().dictionary.currentQueryString;
+
+        const result = await fetch(
+          "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
+        );
+
+        if (result.ok)
+          dispatch({
+            type: DICTIONARY_RESULT_RECEIVED_OK,
+            results: await result.json(),
+            text: currentQueryString,
+          });
+        else
+          dispatch({
+            type: DICTIONARY_RESULT_RECEIVED_FAIL,
+            error: result.statusText,
+          });
+
+      } while (getState().dictionary.currentQueryString !== currentQueryString);
     } catch (error) {
       dispatch({
         type: DICTIONARY_RESULT_RECEIVED_FAIL,
@@ -104,5 +121,4 @@ export function fetchRadicalResults() {
       });
     }
   };
-
 }
