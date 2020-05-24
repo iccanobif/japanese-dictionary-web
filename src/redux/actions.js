@@ -44,11 +44,13 @@ export function fetchDictionaryResults() {
         // the query text was changed.
         if (isQueryRunning) return;
 
-        if (!currentQueryString)
-          return {
+        if (!currentQueryString) {
+          dispatch({
             type: DICTIONARY_RESULT_RECEIVED_OK,
             results: [],
-          };
+          });
+          return
+        }
 
         dispatch({ type: DICTIONARY_START_FETCH });
 
@@ -69,7 +71,6 @@ export function fetchDictionaryResults() {
             type: DICTIONARY_RESULT_RECEIVED_FAIL,
             error: result.statusText,
           });
-
       } while (getState().dictionary.currentQueryString !== currentQueryString);
     } catch (error) {
       dispatch({

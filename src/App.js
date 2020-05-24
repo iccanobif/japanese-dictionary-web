@@ -89,13 +89,11 @@ class AppPresentation extends Component {
   }
 
   initialSelectedWordIndex = () => {
-    const output = calculateWordIndexFromCursorPosition(
+    return calculateWordIndexFromCursorPosition(
       this.props.dictionaryCurrentQueryString,
       this.props.dictionaryQueryResults.map((r) => r.word),
       this.props.dictionaryCurrentCursorPosition
     );
-    console.log(output);
-    return output;
   };
 
   onDictionaryQueryChanged = (ev) => {
