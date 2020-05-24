@@ -39,4 +39,20 @@ it("does nothing", () => {
   expect(calculateWordIndexFromCursorPosition("testtest anothertest", ["test", "test", "anothertest"], 19)).toBe(2)
 
   expect(calculateWordIndexFromCursorPosition("テスト日", ["テスト", "日"], 4)).toBe(1)
+
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 0)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 1)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 2)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 3)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 4)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 5)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 6)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 7)).toBe(0)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 8)).toBe(1)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 9)).toBe(1)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 10)).toBe(1)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 11)).toBe(2)
+  expect(calculateWordIndexFromCursorPosition("これは　　　　テストです", ["これは", "テスト", "です"], 12)).toBe(2)
+
+  
 })

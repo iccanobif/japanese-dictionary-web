@@ -18,7 +18,7 @@ export function calculateWordIndexFromCursorPosition(
   cursorPosition
 ) {
   let adjustedCursorPosition =
-    fullText.substring(0, cursorPosition).replace(/[\s.,。、]/, "").length;
+    fullText.substring(0, cursorPosition).replace(/[\s.,。、]/g, "").length;
 
   for (let i = 0; i < splitWords.length; i++) {
     adjustedCursorPosition -= splitWords[i].length;
