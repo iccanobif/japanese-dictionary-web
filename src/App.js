@@ -12,6 +12,21 @@ import {
 } from "./redux/actions";
 import { connect } from "react-redux";
 
+export function calculateWordIndexFromCursorPosition(
+  fullText,
+  splitWords,
+  cursorPosition
+) {
+  let adjustedCursorPosition =
+    fullText.substring(0, cursorPosition).replace(/[\s.,。、]/, "").length;
+
+  for (let i = 0; i < splitWords.length; i++) {
+    adjustedCursorPosition -= splitWords[i].length;
+    if (adjustedCursorPosition <= 0) return i;
+  }
+  return splitWords.length - 1; // should never happen
+}
+
 class AppPresentation extends Component {
   constructor(props) {
     super(props);
@@ -56,9 +71,9 @@ class AppPresentation extends Component {
             value={this.props.dictionaryCurrentQueryString}
             onChange={this.onDictionaryQueryChanged}
             placeholder="言葉や文章を入力して下さい"
-            // onKeyUp={this.onDictionaryQueryChanged}
-            // onClick={this.onDictionaryQueryChanged}
-            // onFocus={this.onDictionaryQueryChanged}
+            onKeyUp={this.onDictionaryQueryChanged}
+            onClick={this.onDictionaryQueryChanged}
+            onFocus={this.onDictionaryQueryChanged}
             tabIndex={2}
             className="text-input"
           />
@@ -67,10 +82,21 @@ class AppPresentation extends Component {
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
+          initialSelectedWordIndex={this.initialSelectedWordIndex()}
         ></DictionarySearchResults>
       </div>
     );
   }
+
+  initialSelectedWordIndex = () => {
+    const output = calculateWordIndexFromCursorPosition(
+      this.props.dictionaryCurrentQueryString,
+      this.props.dictionaryQueryResults.map((r) => r.word),
+      this.props.dictionaryCurrentCursorPosition
+    );
+    console.log(output);
+    return output;
+  };
 
   onDictionaryQueryChanged = (ev) => {
     this.props.onDictionaryQueryChanged(
@@ -91,6 +117,7 @@ const mapStateToProps = (state) => {
     dictionaryQueryResults: state.dictionary.queryResults,
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
+    dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
 
     radicalsQueryResults: state.radicals.queryResults,
     radicalsIsQueryRunning: state.radicals.isQueryRunning,

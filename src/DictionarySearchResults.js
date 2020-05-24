@@ -3,8 +3,10 @@ import "./DictionarySearchResults.css";
 
 function generateInitialState(props) {
   return {
-    selectedWordIndex: props.results.length > 0 ? 0 : null,
+    selectedWordIndex:
+      props.results.length > 0 ? props.initialSelectedWordIndex : null,
     previousResults: props.results,
+    previousInitialSelectedWordIndex: props.initialSelectedWordIndex,
   };
 }
 
@@ -15,7 +17,10 @@ export class DictionarySearchResults extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.results !== state.previousResults) {
+    if (
+      props.results !== state.previousResults ||
+      props.initialSelectedWordIndex !== state.previousInitialSelectedWordIndex
+    ) {
       return generateInitialState(props);
     }
     return null;
