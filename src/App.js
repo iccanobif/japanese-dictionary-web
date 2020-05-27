@@ -17,8 +17,9 @@ export function calculateWordIndexFromCursorPosition(
   splitWords,
   cursorPosition
 ) {
-  let adjustedCursorPosition =
-    fullText.substring(0, cursorPosition).replace(/[\s.,。、]/g, "").length;
+  let adjustedCursorPosition = fullText
+    .substring(0, cursorPosition)
+    .replace(/[\s.,。、]/g, "").length;
 
   for (let i = 0; i < splitWords.length; i++) {
     adjustedCursorPosition -= splitWords[i].length;
@@ -32,6 +33,7 @@ class AppPresentation extends Component {
     super(props);
     this.state = {
       showEnglishGlosses: false,
+      integratedDictionaryTargetUrl: "",
     };
   }
 
@@ -47,6 +49,29 @@ class AppPresentation extends Component {
             ></input>
           </div>
         </header>
+
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            window.location =
+              "http://japdictapi.herokuapp.com/integrated-dictionary/" +
+              this.state.integratedDictionaryTargetUrl;
+          }}
+        >
+          <label>統合辞書：</label>
+          <input
+            type="text"
+            placeholder="ＵＲＬを入力してEnterキーを押して下さい"
+            onChange={(event) =>
+              this.setState({
+                integratedDictionaryTargetUrl: event.target.value,
+              })
+            }
+            className="text-input"
+          />
+          <Spinner visible={this.props.radicalsIsQueryRunning} />
+        </form>
+
         <form onSubmit={(event) => event.preventDefault()}>
           <label>部首検索：</label>
           <input
