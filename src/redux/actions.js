@@ -49,7 +49,7 @@ export function fetchDictionaryResults() {
             type: DICTIONARY_RESULT_RECEIVED_OK,
             results: [],
           });
-          return
+          return;
         }
 
         dispatch({ type: DICTIONARY_START_FETCH });
@@ -66,11 +66,13 @@ export function fetchDictionaryResults() {
             results: await result.json(),
             text: currentQueryString,
           });
-        else
+        else {
           dispatch({
             type: DICTIONARY_RESULT_RECEIVED_FAIL,
             error: result.statusText,
           });
+          return; // To avoid an endless loop of fail
+        }
       } while (getState().dictionary.currentQueryString !== currentQueryString);
     } catch (error) {
       dispatch({

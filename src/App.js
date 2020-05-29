@@ -61,7 +61,7 @@ class AppPresentation extends Component {
           <label>統合辞書：</label>
           <input
             type="text"
-            placeholder="ＵＲＬを入力してEnterキーを押して下さい"
+            placeholder="ＵＲＬを入力してＥｎｔｅｒキーを押して下さい"
             onChange={(event) =>
               this.setState({
                 integratedDictionaryTargetUrl: event.target.value,
