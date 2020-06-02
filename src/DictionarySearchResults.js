@@ -38,9 +38,7 @@ export class DictionarySearchResults extends Component {
         ></WordList>
         {this.state.selectedWordIndex == null ? null : (
           <WordResults
-            results={
-              this.props.results[this.state.selectedWordIndex].dictionaryEntries
-            }
+            wordData={this.props.results[this.state.selectedWordIndex]}
             showEnglishGlosses={this.props.showEnglishGlosses}
           />
         )}
@@ -80,9 +78,10 @@ function WordList(props) {
 }
 
 function WordResults(props) {
-  if (props.results.length === 0) return <div>一致する結果はありません</div>;
+  if (props.wordData.dictionaryEntries.length === 0)
+    return <div>一致する結果はありません</div>;
 
-  const list = props.results.map((r, i) => {
+  const list = props.wordData.dictionaryEntries.map((r, i) => {
     return (
       <DictionaryEntry
         key={i}
@@ -113,6 +112,8 @@ function DictionaryEntry(props) {
   return (
     <div className="dictionary-entry">
       {lemmas}
+      <br />
+      {props.result.accents?.join(" ")}
       <ul>
         {glosses.map((gloss, i) => (
           <li key={i}>{gloss}</li>
