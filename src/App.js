@@ -57,6 +57,7 @@ class AppPresentation extends Component {
               "http://japdictapi.herokuapp.com/integrated-dictionary/" +
               this.state.integratedDictionaryTargetUrl;
           }}
+          style={{ display: "none" }}
         >
           <label>統合辞書：</label>
           <input
@@ -69,7 +70,6 @@ class AppPresentation extends Component {
             }
             className="text-input"
           />
-          <Spinner visible={this.props.radicalsIsQueryRunning} />
         </form>
 
         <form onSubmit={(event) => event.preventDefault()}>
