@@ -23,7 +23,7 @@ export function calculateWordIndexFromCursorPosition(
 
   for (let i = 0; i < splitWords.length; i++) {
     adjustedCursorPosition -= splitWords[i].length;
-    if (adjustedCursorPosition <= 0) return i;
+    if (adjustedCursorPosition < 0) return i;
   }
   return splitWords.length - 1; // should never happen
 }
