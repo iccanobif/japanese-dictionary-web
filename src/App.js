@@ -59,7 +59,6 @@ class AppPresentation extends Component {
           }}
           style={{ display: "none" }}
         >
-          <label>統合辞書：</label>
           <input
             type="text"
             placeholder="ＵＲＬを入力してＥｎｔｅｒキーを押して下さい"
@@ -73,7 +72,6 @@ class AppPresentation extends Component {
         </form>
 
         <form onSubmit={(event) => event.preventDefault()}>
-          <label>部首検索：</label>
           <input
             type="text"
             onChange={(ev) => this.props.onRadicalQueryChange(ev.target.value)}
@@ -89,8 +87,6 @@ class AppPresentation extends Component {
         ></RadicalSearchResults>
 
         <form onSubmit={(event) => event.preventDefault()}>
-          <label>辞典検索：</label>
-
           <input
             type="text"
             value={this.props.dictionaryCurrentQueryString}
