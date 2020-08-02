@@ -28,52 +28,54 @@ export function changeDictionarySearchInput(text, position) {
 export function fetchDictionaryResults() {
   return async (dispatch, getState) => {
     try {
-      let currentQueryString = null;
-      do {
-        let {
-          currentQueryString,
-          currentlyDisplayedQuery,
-          isQueryRunning,
-        } = getState().dictionary;
+      let { currentQueryString, isQueryRunning } = getState().dictionary;
 
-        // No need to fetch anything if the text hasn't changed
-        if (currentQueryString === currentlyDisplayedQuery) return;
+      // Avoid launching a new query if there's another one currently running.
+      // When that other fetch() is over, it will be checked if in the meanwhile
+      // the query text was changed.
+      if (isQueryRunning) return;
 
-        // Avoid launching a new query if there's another one currently running.
-        // When that other fetch() is over, it will be checked if in the meanwhile
-        // the query text was changed.
-        if (isQueryRunning) return;
+      // Debounce
+      await new Promise((res) => setTimeout(res, 200));
+      if (getState().dictionary.currentQueryString !== currentQueryString)
+        return;
 
-        if (!currentQueryString) {
-          dispatch({
-            type: DICTIONARY_RESULT_RECEIVED_OK,
-            results: [],
-          });
-          return;
-        }
+      // No need to fetch anything if the text hasn't changed (only the cursor position was changed, for example)
+      if (
+        currentQueryString === getState().dictionary.currentlyFetchingQuery ||
+        currentQueryString === getState().dictionary.currentlyDisplayedQuery
+      )
+        return;
 
-        dispatch({ type: DICTIONARY_START_FETCH });
+      if (!currentQueryString) {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_OK,
+          results: [],
+        });
+        return;
+      }
 
-        currentQueryString = getState().dictionary.currentQueryString;
+      dispatch({ type: DICTIONARY_START_FETCH });
 
-        const result = await fetch(
-          "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
-        );
+      const result = await fetch(
+        "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
+      );
 
-        if (result.ok)
-          dispatch({
-            type: DICTIONARY_RESULT_RECEIVED_OK,
-            results: await result.json(),
-            text: currentQueryString,
-          });
-        else {
-          dispatch({
-            type: DICTIONARY_RESULT_RECEIVED_FAIL,
-            error: result.statusText,
-          });
-          return; // To avoid an endless loop of fail
-        }
-      } while (getState().dictionary.currentQueryString !== currentQueryString);
+      if (result.ok) {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_OK,
+          results: await result.json(),
+          text: currentQueryString,
+        });
+        // If in the meanwhile the user has changed the query, fetch again
+        if (currentQueryString !== getState().dictionary.currentQueryString)
+          fetchDictionaryResults();
+      } else {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_FAIL,
+          error: result.statusText,
+        });
+      }
     } catch (error) {
       dispatch({
         type: DICTIONARY_RESULT_RECEIVED_FAIL,

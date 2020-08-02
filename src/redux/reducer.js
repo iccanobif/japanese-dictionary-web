@@ -16,6 +16,7 @@ const initialDictionaryState = {
   currentCursorPosition: 0, // always perfectly aligned with the actual state of the textbox
   isQueryRunning: false, // if it's true, ignore new keystrokes
   currentlyDisplayedQuery: "", // the query for the results that are currently displayed on screen
+  currentlyFetchingQuery: null,
   queryResults: [],
   initialSelectedWordIndex: 0,
   lastKeystrokeTime: 0, // when a setTimeout for debouncing finishes, i check that no new keys have been pressed in the meanwhile
@@ -40,6 +41,7 @@ function dictionary(state = initialDictionaryState, action) {
     case DICTIONARY_START_FETCH:
       return Object.assign({}, state, {
         isQueryRunning: true,
+        currentlyFetchingQuery: state.currentQueryString
       });
 
     case DICTIONARY_RESULT_RECEIVED_OK:
@@ -52,12 +54,14 @@ function dictionary(state = initialDictionaryState, action) {
           action.results.map((r) => r.word),
           state.currentCursorPosition
         ),
+        currentlyFetchingQuery: null,
       });
 
     case DICTIONARY_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
         error: action.error,
+        currentlyFetchingQuery: null,
       });
 
     case DICTIONARY_APPEND_KANJI:
