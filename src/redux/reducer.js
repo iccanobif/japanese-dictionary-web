@@ -15,8 +15,9 @@ const initialDictionaryState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
   currentCursorPosition: 0, // always perfectly aligned with the actual state of the textbox
   isQueryRunning: false, // if it's true, ignore new keystrokes
-  currentlyDisplayedQuery: "",
+  currentlyDisplayedQuery: "", // the query for the results that are currently displayed on screen
   queryResults: [],
+  initialSelectedWordIndex: 0,
   lastKeystrokeTime: 0, // when a setTimeout for debouncing finishes, i check that no new keys have been pressed in the meanwhile
   isWaitingForDebouncer: false, // launch the setTimeout only if this is false and there are no pending fetches
 };
@@ -39,6 +40,11 @@ function dictionary(state = initialDictionaryState, action) {
         isQueryRunning: false,
         queryResults: action.results,
         currentlyDisplayedQuery: action.text,
+        initialSelectedWordIndex: calculateWordIndexFromCursorPosition(
+          action.text,
+          action.results.map((r) => r.word),
+          state.currentCursorPosition
+        ),
       });
 
     case DICTIONARY_RESULT_RECEIVED_FAIL:
@@ -94,3 +100,19 @@ const mainReducer = combineReducers({
 });
 
 export default mainReducer;
+
+export function calculateWordIndexFromCursorPosition(
+  fullText,
+  splitWords,
+  cursorPosition
+) {
+  let adjustedCursorPosition = fullText
+    .substring(0, cursorPosition)
+    .replace(/[\s.,。、]/g, "").length;
+
+  for (let i = 0; i < splitWords.length; i++) {
+    adjustedCursorPosition -= splitWords[i].length;
+    if (adjustedCursorPosition < 0) return i;
+  }
+  return splitWords.length - 1; // should never happen
+}

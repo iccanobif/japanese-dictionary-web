@@ -12,22 +12,6 @@ import {
 } from "./redux/actions";
 import { connect } from "react-redux";
 
-export function calculateWordIndexFromCursorPosition(
-  fullText,
-  splitWords,
-  cursorPosition
-) {
-  let adjustedCursorPosition = fullText
-    .substring(0, cursorPosition)
-    .replace(/[\s.,。、]/g, "").length;
-
-  for (let i = 0; i < splitWords.length; i++) {
-    adjustedCursorPosition -= splitWords[i].length;
-    if (adjustedCursorPosition < 0) return i;
-  }
-  return splitWords.length - 1; // should never happen
-}
-
 class AppPresentation extends Component {
   constructor(props) {
     super(props);
@@ -74,7 +58,7 @@ class AppPresentation extends Component {
         <form onSubmit={(event) => event.preventDefault()}>
           <input
             type="text"
-            onChange={(ev) => this.props.onRadicalQueryChange(ev.target.value)}
+            onChange={(ev) => this.onRadicalQueryChange(ev)}
             placeholder="英語で部首の名前を入力して下さい"
             tabIndex={1}
             className="text-input"
@@ -90,8 +74,8 @@ class AppPresentation extends Component {
           <input
             type="text"
             value={this.props.dictionaryCurrentQueryString}
-            onChange={this.onDictionaryQueryChanged}
             placeholder="言葉や文章を入力して下さい"
+            onChange={this.onDictionaryQueryChanged}
             onKeyUp={this.onDictionaryQueryChanged}
             onClick={this.onDictionaryQueryChanged}
             onFocus={this.onDictionaryQueryChanged}
@@ -103,19 +87,16 @@ class AppPresentation extends Component {
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
-          initialSelectedWordIndex={this.initialSelectedWordIndex()}
+          initialSelectedWordIndex={this.props.dictionaryInitialSelectedWordIndex}
         ></DictionarySearchResults>
       </div>
     );
   }
 
-  initialSelectedWordIndex = () => {
-    return calculateWordIndexFromCursorPosition(
-      this.props.dictionaryCurrentQueryString,
-      this.props.dictionaryQueryResults.map((r) => r.word),
-      this.props.dictionaryCurrentCursorPosition
-    );
-  };
+  onRadicalQueryChange = (ev) => 
+  {
+    this.props.onRadicalQueryChange(ev.target.value)
+  }
 
   onDictionaryQueryChanged = (ev) => {
     this.props.onDictionaryQueryChanged(
@@ -137,6 +118,7 @@ const mapStateToProps = (state) => {
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
     dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
+    dictionaryInitialSelectedWordIndex: state.dictionary.initialSelectedWordIndex,
 
     radicalsQueryResults: state.radicals.queryResults,
     radicalsIsQueryRunning: state.radicals.isQueryRunning,
