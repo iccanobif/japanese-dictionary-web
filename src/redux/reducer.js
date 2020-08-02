@@ -28,6 +28,13 @@ function dictionary(state = initialDictionaryState, action) {
       return Object.assign({}, state, {
         currentQueryString: action.text,
         currentCursorPosition: action.position,
+        initialSelectedWordIndex: state.isQueryRunning
+          ? state.initialSelectedWordIndex
+          : calculateWordIndexFromCursorPosition(
+              state.currentlyDisplayedQuery,
+              state.queryResults.map((r) => r.word),
+              action.position
+            ),
       });
 
     case DICTIONARY_START_FETCH:
