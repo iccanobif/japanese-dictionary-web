@@ -35,6 +35,14 @@ export function fetchDictionaryResults() {
       // the query text was changed.
       if (isQueryRunning) return;
 
+      if (!currentQueryString) {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_OK,
+          results: [],
+        });
+        return;
+      }
+
       // Debounce
       await new Promise((res) => setTimeout(res, 200));
       if (getState().dictionary.currentQueryString !== currentQueryString)
@@ -46,14 +54,6 @@ export function fetchDictionaryResults() {
         currentQueryString === getState().dictionary.currentlyDisplayedQuery
       )
         return;
-
-      if (!currentQueryString) {
-        dispatch({
-          type: DICTIONARY_RESULT_RECEIVED_OK,
-          results: [],
-        });
-        return;
-      }
 
       dispatch({ type: DICTIONARY_START_FETCH });
 
@@ -68,6 +68,9 @@ export function fetchDictionaryResults() {
           text: currentQueryString,
         });
         // If in the meanwhile the user has changed the query, fetch again
+        console.log("currentQueryString", currentQueryString)
+        console.log("getState().dictionary.currentQueryString", getState().dictionary.currentQueryString)
+
         if (currentQueryString !== getState().dictionary.currentQueryString)
           fetchDictionaryResults();
       } else {
