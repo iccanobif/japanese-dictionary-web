@@ -31,11 +31,6 @@ export function fetchDictionaryResultsIfNeeded(text, position) {
       if (text === currentlyDisplayedInput)
         return
 
-      // Avoid launching a new query if there's another one currently running.
-      // When that other fetch() is over, it will be checked if in the meanwhile
-      // the query text was changed.
-      // if (isQueryRunning) return;
-
       // No need to actually fetch anything if the string is empty
       if (!text || text.match(/^\s*$/)) {
         dispatch({
