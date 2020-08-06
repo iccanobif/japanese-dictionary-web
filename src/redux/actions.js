@@ -74,11 +74,6 @@ export function fetchDictionaryResultsIfNeeded() {
         return;
       }
 
-      // Debounce
-      await new Promise((res) => setTimeout(res, 200));
-      if (getState().dictionary.currentQueryString !== currentQueryString)
-        return;
-
       // No need to fetch anything if the text hasn't changed (only the cursor position was changed, for example)
       if (
         currentQueryString === getState().dictionary.currentlyFetchingQuery ||
