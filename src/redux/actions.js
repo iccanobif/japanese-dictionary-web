@@ -25,48 +25,22 @@ export function changeDictionarySearchInput(text, position) {
   };
 }
 
-async function fetchDictionaryResults(dispatch, getState, currentQueryString) {
-  const result = await fetch(
-    "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
-  );
-
-  if (result.ok) {
-    // If in the meanwhile the user has changed the query, fetch again
-
-    console.log("currentQueryString", currentQueryString);
-    console.log(
-      "getState().dictionary.currentlyDisplayedQuery",
-      getState().dictionary.currentlyDisplayedQuery
-    );
-    if (currentQueryString !== getState().dictionary.currentlyDisplayedQuery)
-      fetchDictionaryResults(dispatch, getState, getState().dictionary.currentQueryString);
-    // the new fetchDictionaryResults() call runs asynchronously, in the meanwhile display
-    // the results we have now by dispatching DICTIONARY_RESULT_RECEIVED_OK
-
-    dispatch({
-      type: DICTIONARY_RESULT_RECEIVED_OK,
-      results: await result.json(),
-      text: currentQueryString,
-    });
-  } else {
-    dispatch({
-      type: DICTIONARY_RESULT_RECEIVED_FAIL,
-      error: result.statusText,
-    });
-  }
-}
-
 export function fetchDictionaryResultsIfNeeded() {
   return async (dispatch, getState) => {
     try {
-      const { currentQueryString, isQueryRunning } = getState().dictionary;
+      const {
+        currentQueryString,
+        isQueryRunning,
+        // queryChangesCount,
+      } = getState().dictionary;
 
       // Avoid launching a new query if there's another one currently running.
       // When that other fetch() is over, it will be checked if in the meanwhile
       // the query text was changed.
       if (isQueryRunning) return;
 
-      if (!currentQueryString) {
+      // No need to actually fetch anything if the string is empty
+      if (!currentQueryString || currentQueryString.match(/^\s*$/)) {
         dispatch({
           type: DICTIONARY_RESULT_RECEIVED_OK,
           results: [],
@@ -74,16 +48,28 @@ export function fetchDictionaryResultsIfNeeded() {
         return;
       }
 
-      // No need to fetch anything if the text hasn't changed (only the cursor position was changed, for example)
-      if (
-        currentQueryString === getState().dictionary.currentlyFetchingQuery ||
-        currentQueryString === getState().dictionary.currentlyDisplayedQuery
-      )
-        return;
-
       dispatch({ type: DICTIONARY_START_FETCH });
 
-      await fetchDictionaryResults(dispatch, getState, currentQueryString); // Loops until
+      const result = await fetch(
+        "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
+      );
+
+      // // In the meanwhile the input has already changed and its results have already bee
+      // if (queryChangesCount !== getState().dictionary.queryChangesCount)
+      //   return
+
+      if (result.ok) {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_OK,
+          results: await result.json(),
+          text: currentQueryString,
+        });
+      } else {
+        dispatch({
+          type: DICTIONARY_RESULT_RECEIVED_FAIL,
+          error: result.statusText,
+        });
+      }
     } catch (error) {
       dispatch({
         type: DICTIONARY_RESULT_RECEIVED_FAIL,

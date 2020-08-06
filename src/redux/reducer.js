@@ -14,13 +14,10 @@ import {
 const initialDictionaryState = {
   currentQueryString: "", // always perfectly aligned with the actual state of the textbox
   currentCursorPosition: 0, // always perfectly aligned with the actual state of the textbox
-  isQueryRunning: false, // if it's true, ignore new keystrokes
-  currentlyDisplayedQuery: "", // the query for the results that are currently displayed on screen
-  currentlyFetchingQuery: null,
+  isQueryRunning: false,
   queryResults: [],
   initialSelectedWordIndex: 0,
-  lastKeystrokeTime: 0, // when a setTimeout for debouncing finishes, i check that no new keys have been pressed in the meanwhile
-  isWaitingForDebouncer: false, // launch the setTimeout only if this is false and there are no pending fetches
+  queryChangesCount: 0, // to avoid displaying old results when there's already a more relevant one on screen
 };
 
 function dictionary(state = initialDictionaryState, action) {
@@ -29,10 +26,11 @@ function dictionary(state = initialDictionaryState, action) {
       return Object.assign({}, state, {
         currentQueryString: action.text,
         currentCursorPosition: action.position,
+        queryChangesCount: state.queryChangesCount + 1,
         initialSelectedWordIndex: state.isQueryRunning
           ? state.initialSelectedWordIndex
           : calculateWordIndexFromCursorPosition(
-              state.currentlyDisplayedQuery,
+              action.text,
               state.queryResults.map((r) => r.word),
               action.position
             ),
@@ -41,27 +39,23 @@ function dictionary(state = initialDictionaryState, action) {
     case DICTIONARY_START_FETCH:
       return Object.assign({}, state, {
         isQueryRunning: true,
-        currentlyFetchingQuery: state.currentQueryString
       });
 
     case DICTIONARY_RESULT_RECEIVED_OK:
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
-        currentlyDisplayedQuery: action.text,
         initialSelectedWordIndex: calculateWordIndexFromCursorPosition(
           action.text,
           action.results.map((r) => r.word),
           state.currentCursorPosition
         ),
-        currentlyFetchingQuery: null,
       });
 
     case DICTIONARY_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
         error: action.error,
-        currentlyFetchingQuery: null,
       });
 
     case DICTIONARY_APPEND_KANJI:
