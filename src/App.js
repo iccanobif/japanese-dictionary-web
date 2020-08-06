@@ -6,7 +6,7 @@ import { DictionarySearchResults } from "./DictionarySearchResults";
 import {
   changeDictionarySearchInput,
   appendKanji,
-  fetchDictionaryResults,
+  fetchDictionaryResultsIfNeeded,
   changeRadicalSearchInput,
   fetchRadicalResults,
 } from "./redux/actions";
@@ -129,11 +129,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDictionaryQueryChanged: (text, position) => {
       dispatch(changeDictionarySearchInput(text, position));
-      dispatch(fetchDictionaryResults());
+      dispatch(fetchDictionaryResultsIfNeeded());
     },
     appendKanjiToQuery: (kanji) => {
       dispatch(appendKanji(kanji));
-      dispatch(fetchDictionaryResults());
+      dispatch(fetchDictionaryResultsIfNeeded());
     },
     onRadicalQueryChange: (text) => {
       dispatch(changeRadicalSearchInput(text));

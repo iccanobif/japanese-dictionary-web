@@ -25,10 +25,41 @@ export function changeDictionarySearchInput(text, position) {
   };
 }
 
-export function fetchDictionaryResults() {
+async function fetchDictionaryResults(dispatch, getState, currentQueryString) {
+  const result = await fetch(
+    "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
+  );
+
+  if (result.ok) {
+    // If in the meanwhile the user has changed the query, fetch again
+
+    console.log("currentQueryString", currentQueryString);
+    console.log(
+      "getState().dictionary.currentlyDisplayedQuery",
+      getState().dictionary.currentlyDisplayedQuery
+    );
+    if (currentQueryString !== getState().dictionary.currentlyDisplayedQuery)
+      fetchDictionaryResults(dispatch, getState, getState().dictionary.currentQueryString);
+    // the new fetchDictionaryResults() call runs asynchronously, in the meanwhile display
+    // the results we have now by dispatching DICTIONARY_RESULT_RECEIVED_OK
+
+    dispatch({
+      type: DICTIONARY_RESULT_RECEIVED_OK,
+      results: await result.json(),
+      text: currentQueryString,
+    });
+  } else {
+    dispatch({
+      type: DICTIONARY_RESULT_RECEIVED_FAIL,
+      error: result.statusText,
+    });
+  }
+}
+
+export function fetchDictionaryResultsIfNeeded() {
   return async (dispatch, getState) => {
     try {
-      let { currentQueryString, isQueryRunning } = getState().dictionary;
+      const { currentQueryString, isQueryRunning } = getState().dictionary;
 
       // Avoid launching a new query if there's another one currently running.
       // When that other fetch() is over, it will be checked if in the meanwhile
@@ -57,28 +88,7 @@ export function fetchDictionaryResults() {
 
       dispatch({ type: DICTIONARY_START_FETCH });
 
-      const result = await fetch(
-        "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
-      );
-
-      if (result.ok) {
-        dispatch({
-          type: DICTIONARY_RESULT_RECEIVED_OK,
-          results: await result.json(),
-          text: currentQueryString,
-        });
-        // If in the meanwhile the user has changed the query, fetch again
-        console.log("currentQueryString", currentQueryString)
-        console.log("getState().dictionary.currentQueryString", getState().dictionary.currentQueryString)
-
-        if (currentQueryString !== getState().dictionary.currentQueryString)
-          fetchDictionaryResults();
-      } else {
-        dispatch({
-          type: DICTIONARY_RESULT_RECEIVED_FAIL,
-          error: result.statusText,
-        });
-      }
+      await fetchDictionaryResults(dispatch, getState, currentQueryString); // Loops until
     } catch (error) {
       dispatch({
         type: DICTIONARY_RESULT_RECEIVED_FAIL,
