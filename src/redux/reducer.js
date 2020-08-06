@@ -46,7 +46,9 @@ function dictionary(state = initialDictionaryState, action) {
 
     case DICTIONARY_RESULT_RECEIVED_OK:
       if (action.queryChangesCount < state.queryChangesCount)
-        return state
+        return Object.assign({}, state, {
+          isQueryRunning: false,
+        });
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
