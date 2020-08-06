@@ -4,7 +4,6 @@ import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
 import {
-  changeDictionarySearchInput,
   appendKanji,
   fetchDictionaryResultsIfNeeded,
   changeRadicalSearchInput,
@@ -128,12 +127,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onDictionaryQueryChanged: (text, position) => {
-      dispatch(changeDictionarySearchInput(text, position));
-      dispatch(fetchDictionaryResultsIfNeeded());
+      dispatch(fetchDictionaryResultsIfNeeded(text, position));
     },
     appendKanjiToQuery: (kanji) => {
       dispatch(appendKanji(kanji));
-      dispatch(fetchDictionaryResultsIfNeeded());
     },
     onRadicalQueryChange: (text) => {
       dispatch(changeRadicalSearchInput(text));

@@ -17,30 +17,27 @@ export function appendKanji(kanji) {
   };
 }
 
-export function changeDictionarySearchInput(text, position) {
-  return {
-    type: DICTIONARY_CHANGE_SEARCH_INPUT,
-    text,
-    position,
-  };
-}
-
-export function fetchDictionaryResultsIfNeeded() {
+export function fetchDictionaryResultsIfNeeded(text, position) {
   return async (dispatch, getState) => {
     try {
-      const {
-        currentQueryString,
-        isQueryRunning,
-        // queryChangesCount,
-      } = getState().dictionary;
+      dispatch({
+        type: DICTIONARY_CHANGE_SEARCH_INPUT,
+        text,
+        position,
+      })
+
+      const { queryChangesCount, currentlyDisplayedInput } = getState().dictionary
+
+      if (text === currentlyDisplayedInput)
+        return
 
       // Avoid launching a new query if there's another one currently running.
       // When that other fetch() is over, it will be checked if in the meanwhile
       // the query text was changed.
-      if (isQueryRunning) return;
+      // if (isQueryRunning) return;
 
       // No need to actually fetch anything if the string is empty
-      if (!currentQueryString || currentQueryString.match(/^\s*$/)) {
+      if (!text || text.match(/^\s*$/)) {
         dispatch({
           type: DICTIONARY_RESULT_RECEIVED_OK,
           results: [],
@@ -51,7 +48,7 @@ export function fetchDictionaryResultsIfNeeded() {
       dispatch({ type: DICTIONARY_START_FETCH });
 
       const result = await fetch(
-        "https://japdictapi.herokuapp.com/sentence/" + currentQueryString
+        "https://japdictapi.herokuapp.com/sentence/" + text
       );
 
       // // In the meanwhile the input has already changed and its results have already bee
@@ -62,7 +59,8 @@ export function fetchDictionaryResultsIfNeeded() {
         dispatch({
           type: DICTIONARY_RESULT_RECEIVED_OK,
           results: await result.json(),
-          text: currentQueryString,
+          text,
+          queryChangesCount,
         });
       } else {
         dispatch({

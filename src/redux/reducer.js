@@ -18,6 +18,7 @@ const initialDictionaryState = {
   queryResults: [],
   initialSelectedWordIndex: 0,
   queryChangesCount: 0, // to avoid displaying old results when there's already a more relevant one on screen
+  currentlyDisplayedInput: "",
 };
 
 function dictionary(state = initialDictionaryState, action) {
@@ -26,7 +27,9 @@ function dictionary(state = initialDictionaryState, action) {
       return Object.assign({}, state, {
         currentQueryString: action.text,
         currentCursorPosition: action.position,
-        queryChangesCount: state.queryChangesCount + 1,
+        queryChangesCount:
+          state.queryChangesCount +
+          (action.text === state.currentQueryString ? 0 : 1),
         initialSelectedWordIndex: state.isQueryRunning
           ? state.initialSelectedWordIndex
           : calculateWordIndexFromCursorPosition(
@@ -42,9 +45,12 @@ function dictionary(state = initialDictionaryState, action) {
       });
 
     case DICTIONARY_RESULT_RECEIVED_OK:
+      if (action.queryChangesCount < state.queryChangesCount)
+        return state
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
+        currentlyDisplayedInput: action.text,
         initialSelectedWordIndex: calculateWordIndexFromCursorPosition(
           action.text,
           action.results.map((r) => r.word),
@@ -111,8 +117,7 @@ export function calculateWordIndexFromCursorPosition(
   splitWords,
   cursorPosition
 ) {
-  if (splitWords.length === 0)
-    return 0
+  if (splitWords.length === 0) return 0;
   let adjustedCursorPosition = fullText
     .substring(0, cursorPosition)
     .replace(/[\s.,。、]/g, "").length;
