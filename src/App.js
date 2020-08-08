@@ -16,8 +16,20 @@ class AppPresentation extends Component {
     super(props);
     this.state = {
       showEnglishGlosses: false,
-      integratedDictionaryTargetUrl: "",
     };
+  }
+
+  handleWindowFocus = () => {
+    console.log("window got focus");
+    document.getElementById("dictionaryQueryString").focus()
+  };
+
+  componentDidMount() {
+    window.addEventListener("focus", this.handleWindowFocus);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("focus", this.handleWindowFocus);
   }
 
   render() {
@@ -32,27 +44,6 @@ class AppPresentation extends Component {
             ></input>
           </div>
         </header>
-
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            window.location =
-              "http://japdictapi.herokuapp.com/integrated-dictionary/" +
-              this.state.integratedDictionaryTargetUrl;
-          }}
-          style={{ display: "none" }}
-        >
-          <input
-            type="text"
-            placeholder="ＵＲＬを入力してＥｎｔｅｒキーを押して下さい"
-            onChange={(event) =>
-              this.setState({
-                integratedDictionaryTargetUrl: event.target.value,
-              })
-            }
-            className="text-input"
-          />
-        </form>
 
         <form onSubmit={(event) => event.preventDefault()}>
           <input
@@ -71,6 +62,7 @@ class AppPresentation extends Component {
 
         <form onSubmit={(event) => event.preventDefault()}>
           <input
+            id="dictionaryQueryString"
             type="text"
             value={this.props.dictionaryCurrentQueryString}
             placeholder="言葉や文章を入力して下さい"
@@ -86,16 +78,17 @@ class AppPresentation extends Component {
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
-          initialSelectedWordIndex={this.props.dictionaryInitialSelectedWordIndex}
+          initialSelectedWordIndex={
+            this.props.dictionaryInitialSelectedWordIndex
+          }
         ></DictionarySearchResults>
       </div>
     );
   }
 
-  onRadicalQueryChange = (ev) => 
-  {
-    this.props.onRadicalQueryChange(ev.target.value)
-  }
+  onRadicalQueryChange = (ev) => {
+    this.props.onRadicalQueryChange(ev.target.value);
+  };
 
   onDictionaryQueryChanged = (ev) => {
     this.props.onDictionaryQueryChanged(
@@ -117,7 +110,8 @@ const mapStateToProps = (state) => {
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
     dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
-    dictionaryInitialSelectedWordIndex: state.dictionary.initialSelectedWordIndex,
+    dictionaryInitialSelectedWordIndex:
+      state.dictionary.initialSelectedWordIndex,
 
     radicalsQueryResults: state.radicals.queryResults,
     radicalsIsQueryRunning: state.radicals.isQueryRunning,
