@@ -95,7 +95,7 @@ function WordResults(props) {
 
 function DictionaryEntry(props) {
   const lemmas = props.result.lemmas.map((lemma, i) => (
-    <span key={i}>{lemma}</span>
+    <span key={i}>{lemma.kanji + "（" + lemma.reading + "）"}</span>
   ));
 
   let glosses;

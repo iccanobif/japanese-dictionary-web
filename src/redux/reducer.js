@@ -63,7 +63,7 @@ function dictionary(state = initialDictionaryState, action) {
     case DICTIONARY_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
-        error: action.error,
+        error: action.error.message,
       });
 
     case DICTIONARY_APPEND_KANJI:

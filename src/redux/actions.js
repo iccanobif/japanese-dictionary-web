@@ -24,12 +24,14 @@ export function fetchDictionaryResultsIfNeeded(text, position) {
         type: DICTIONARY_CHANGE_SEARCH_INPUT,
         text,
         position,
-      })
+      });
 
-      const { queryChangesCount, currentlyDisplayedInput } = getState().dictionary
+      const {
+        queryChangesCount,
+        currentlyDisplayedInput,
+      } = getState().dictionary;
 
-      if (text === currentlyDisplayedInput)
-        return
+      if (text === currentlyDisplayedInput) return;
 
       // No need to actually fetch anything if the string is empty
       if (!text || text.match(/^\s*$/)) {
@@ -43,7 +45,7 @@ export function fetchDictionaryResultsIfNeeded(text, position) {
       dispatch({ type: DICTIONARY_START_FETCH });
 
       const result = await fetch(
-        "https://japdictapi.herokuapp.com/sentence/" + text
+        process.env.REACT_APP_API_URL + "/sentence/" + text
       );
 
       // // In the meanwhile the input has already changed and its results have already bee
