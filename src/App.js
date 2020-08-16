@@ -75,7 +75,7 @@ class AppPresentation extends Component {
           />
           <Spinner visible={this.props.dictionaryIsQueryRunning} />
         </form>
-        {this.props.dictionaryError}
+        {this.props.dictionaryErrorMessage}
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
@@ -110,7 +110,7 @@ const mapStateToProps = (state) => {
     dictionaryQueryResults: state.dictionary.queryResults,
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
-    dictionaryError: state.dictionary.error,
+    dictionaryErrorMessage: state.dictionary.errorMessage,
     dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
     dictionaryInitialSelectedWordIndex:
       state.dictionary.initialSelectedWordIndex,

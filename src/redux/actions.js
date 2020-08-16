@@ -62,13 +62,13 @@ export function fetchDictionaryResultsIfNeeded(text, position) {
       } else {
         dispatch({
           type: DICTIONARY_RESULT_RECEIVED_FAIL,
-          error: result.statusText,
+          errorMessage: result.statusText,
         });
       }
     } catch (error) {
       dispatch({
         type: DICTIONARY_RESULT_RECEIVED_FAIL,
-        error,
+        errorMessage: error.message,
       });
     }
   };
@@ -106,12 +106,12 @@ export function fetchRadicalResults() {
       else
         dispatch({
           type: RADICAL_RESULT_RECEIVED_FAIL,
-          error: result.statusText,
+          errorMessage: result.statusText,
         });
     } catch (error) {
       dispatch({
         type: RADICAL_RESULT_RECEIVED_FAIL,
-        error,
+        errorMessage: error.message,
       });
     }
   };

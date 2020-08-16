@@ -19,6 +19,7 @@ const initialDictionaryState = {
   initialSelectedWordIndex: 0,
   queryChangesCount: 0, // to avoid displaying old results when there's already a more relevant one on screen
   currentlyDisplayedInput: "",
+  errorMessage: null,
 };
 
 function dictionary(state = initialDictionaryState, action) {
@@ -58,12 +59,13 @@ function dictionary(state = initialDictionaryState, action) {
           action.results.map((r) => r.word),
           state.currentCursorPosition
         ),
+        errorMessage: null,
       });
 
     case DICTIONARY_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
-        error: action.error.message,
+        errorMessage: action.errorMessage,
       });
 
     case DICTIONARY_APPEND_KANJI:
@@ -92,11 +94,12 @@ function radicals(state = radicalsInitialState, action) {
       return Object.assign({}, state, {
         isQueryRunning: false,
         queryResults: action.results,
+        errorMessage: null,
       });
     case RADICAL_RESULT_RECEIVED_FAIL:
       return Object.assign({}, state, {
         isQueryRunning: false,
-        error: action.error,
+        errorMessage: action.errorMessage,
       });
     case RADICAL_START_FETCH:
       return Object.assign({}, state, {
