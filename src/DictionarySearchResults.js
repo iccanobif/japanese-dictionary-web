@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./DictionarySearchResults.css";
+import forvoLogo from "./forvo.png";
 
 function generateInitialState(props) {
   return {
@@ -95,7 +96,17 @@ function WordResults(props) {
 
 function DictionaryEntry(props) {
   const lemmas = props.result.lemmas.map((lemma, i) => (
-    <span key={i}>{lemma.kanji + "（" + lemma.reading + "）"}</span>
+    <span key={i} style={{ marginRight: "1em" }}>
+      {lemma.kanji}（{lemma.reading}）
+      <a
+        href={"https://ja.forvo.com/word/" + lemma.kanji + "/#ja"}
+        target="_blank"
+        rel="noreferrer noopener"
+        style={{ verticalAlign: "middle" }}
+      >
+        <img src={forvoLogo} alt="forvo" style={{ height: "1em" }}></img>
+      </a>
+    </span>
   ));
 
   let glosses;
