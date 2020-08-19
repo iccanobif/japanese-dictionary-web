@@ -21,7 +21,7 @@ class AppPresentation extends Component {
 
   handleWindowFocus = () => {
     console.log("window got focus");
-    document.getElementById("dictionaryQueryString").focus()
+    document.getElementById("dictionaryQueryString").focus();
   };
 
   componentDidMount() {
@@ -41,6 +41,7 @@ class AppPresentation extends Component {
             <input
               type="checkbox"
               onChange={this.handleEnglishFlagChange}
+              value={this.state.showEnglishGlosses}
             ></input>
           </div>
         </header>
@@ -66,6 +67,7 @@ class AppPresentation extends Component {
             type="text"
             value={this.props.dictionaryCurrentQueryString}
             placeholder="言葉や文章を入力して下さい"
+            onKeyDown={this.onDictionaryInputKeyPress}
             onChange={this.onDictionaryQueryChanged}
             onKeyUp={this.onDictionaryQueryChanged}
             onClick={this.onDictionaryQueryChanged}
@@ -98,6 +100,15 @@ class AppPresentation extends Component {
     );
   };
 
+  onDictionaryInputKeyPress = (ev) => {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp"){
+      this.setState((state) => ({
+        showEnglishGlosses: !state.showEnglishGlosses, // I don't know why this doesn't also update the value of the checkbox
+      }));
+      ev.preventDefault()
+    }
+  };
+
   handleEnglishFlagChange = (event) => {
     this.setState({
       showEnglishGlosses: event.target.checked,
@@ -114,7 +125,6 @@ const mapStateToProps = (state) => {
     dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
     dictionaryInitialSelectedWordIndex:
       state.dictionary.initialSelectedWordIndex,
-    
 
     radicalsQueryResults: state.radicals.queryResults,
     radicalsIsQueryRunning: state.radicals.isQueryRunning,
