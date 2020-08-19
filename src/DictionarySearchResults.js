@@ -97,7 +97,7 @@ function WordResults(props) {
 function DictionaryEntry(props) {
   const lemmas = props.result.lemmas.map((lemma, i) => (
     <span key={i} style={{ marginRight: "1em" }}>
-      {lemma.kanji}（{lemma.reading}）
+      {lemma.kanji} <span className="lemma-reading">（{lemma.reading}）
       <a
         href={"https://ja.forvo.com/word/" + lemma.kanji + "/#ja"}
         target="_blank"
@@ -106,6 +106,7 @@ function DictionaryEntry(props) {
       >
         <img src={forvoLogo} alt="forvo" style={{ height: "1em" }}></img>
       </a>
+      </span>
     </span>
   ));
 

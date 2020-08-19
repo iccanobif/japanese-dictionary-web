@@ -37,3 +37,7 @@ form .text-input {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.lemma-reading {
+  font-size: 18px;
+}
