@@ -123,6 +123,11 @@ function DictionaryEntry(props) {
   return (
     <div className="dictionary-entry">
       {lemmas}
+      {props.result.partOfSpeech.length === 0 ? (
+        ""
+      ) : (
+        <i>( {props.result.partOfSpeech.join(",")} )</i>
+      )}
       <br />
       {props.result.accents?.join(" ")}
       <ul>
