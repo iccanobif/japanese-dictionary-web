@@ -97,15 +97,17 @@ function WordResults(props) {
 function DictionaryEntry(props) {
   const lemmas = props.result.lemmas.map((lemma, i) => (
     <span key={i} style={{ marginRight: "1em" }}>
-      {lemma.kanji} <span className="lemma-reading">（{lemma.reading}）
-      <a
-        href={"https://ja.forvo.com/word/" + lemma.kanji + "/#ja"}
-        target="_blank"
-        rel="noreferrer noopener"
-        style={{ verticalAlign: "middle" }}
-      >
-        <img src={forvoLogo} alt="forvo" style={{ height: "1em" }}></img>
-      </a>
+      {lemma.kanji}
+      <span className="lemma-reading">
+        （{lemma.reading}）
+        <a
+          href={"https://ja.forvo.com/word/" + lemma.kanji + "/#ja"}
+          target="_blank"
+          rel="noreferrer noopener"
+          style={{ verticalAlign: "middle" }}
+        >
+          <img src={forvoLogo} alt="forvo" style={{ height: "1em" }}></img>
+        </a>
       </span>
     </span>
   ));
@@ -127,7 +129,7 @@ function DictionaryEntry(props) {
       {props.result.partOfSpeech.length === 0 ? (
         ""
       ) : (
-        <i>( {props.result.partOfSpeech.join(",")} )</i>
+        <i>({props.result.partOfSpeech.join(",")})</i>
       )}
       <br />
       {props.result.accents?.join(" ")}
