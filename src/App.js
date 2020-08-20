@@ -42,7 +42,7 @@ class AppPresentation extends Component {
               <input
                 type="checkbox"
                 onChange={this.handleEnglishFlagChange}
-                value={this.state.showEnglishGlosses}
+                checked={this.state.showEnglishGlosses}
               ></input>
             </label>
           </div>
