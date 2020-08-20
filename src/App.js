@@ -37,12 +37,14 @@ class AppPresentation extends Component {
       <div className="App">
         <header>
           <div className="english-flag">
-            <label>英語：</label>
-            <input
-              type="checkbox"
-              onChange={this.handleEnglishFlagChange}
-              value={this.state.showEnglishGlosses}
-            ></input>
+            <label>
+              英語：
+              <input
+                type="checkbox"
+                onChange={this.handleEnglishFlagChange}
+                value={this.state.showEnglishGlosses}
+              ></input>
+            </label>
           </div>
         </header>
 
@@ -101,11 +103,11 @@ class AppPresentation extends Component {
   };
 
   onDictionaryInputKeyPress = (ev) => {
-    if (ev.key === "ArrowDown" || ev.key === "ArrowUp"){
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
       this.setState((state) => ({
         showEnglishGlosses: !state.showEnglishGlosses, // I don't know why this doesn't also update the value of the checkbox
       }));
-      ev.preventDefault()
+      ev.preventDefault();
     }
   };
 
