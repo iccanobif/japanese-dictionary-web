@@ -30,7 +30,7 @@ header {
 }
 
 .link-button {
-  background: none!important;
+  background: none;
   border: none;
   padding: 0!important;
   /*optional*/
@@ -46,4 +46,8 @@ header {
 
 .alert {
   margin: 20px;
+}
+
+.selected-radical-button {
+  background-color: #68570d;
 }
