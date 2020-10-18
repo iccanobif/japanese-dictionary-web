@@ -17,11 +17,12 @@ const middlewares = [
 export const store = createStore(reducer, applyMiddleware(...middlewares));
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>,
+  // </React.StrictMode>
+  ,
   document.getElementById("root")
 );
 

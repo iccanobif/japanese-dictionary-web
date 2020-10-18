@@ -3,52 +3,60 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearchResults } from "./RadicalSearchResults";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import {
+import
+{
   appendKanji,
   fetchDictionaryResultsIfNeeded,
   changeRadicalSearchInput,
   fetchRadicalResults,
 } from "./redux/actions";
 import { connect } from "react-redux";
+import Alert from 'react-bootstrap/Alert'
+import IntegratedDictionaryOpener from './IntegratedDictionaryOpener.js'
 
-class AppPresentation extends Component {
-  constructor(props) {
+class AppPresentation extends Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = {
-      showEnglishGlosses: false,
+      showEnglishGlosses: false
     };
   }
 
-  handleWindowFocus = () => {
+  handleWindowFocus = () =>
+  {
     console.log("window got focus");
     document.getElementById("dictionaryQueryString").focus();
   };
 
-  componentDidMount() {
+  componentDidMount()
+  {
     window.addEventListener("focus", this.handleWindowFocus);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount()
+  {
     window.removeEventListener("focus", this.handleWindowFocus);
   }
 
-  render() {
+  render()
+  {
     return (
       <div className="App">
         <header>
-          <div className="english-flag">
-            <label>
-              英語：
+          <IntegratedDictionaryOpener></IntegratedDictionaryOpener>
+          <label>
+            英語：
               <input
-                type="checkbox"
-                onChange={this.handleEnglishFlagChange}
-                checked={this.state.showEnglishGlosses}
-              ></input>
-            </label>
-          </div>
+              type="checkbox"
+              onChange={this.handleEnglishFlagChange}
+              checked={this.state.showEnglishGlosses}
+            ></input>
+          </label>
         </header>
 
-        <form onSubmit={(event) => event.preventDefault()}>
+        <form className="main-form" onSubmit={(event) => event.preventDefault()}>
           <input
             type="text"
             onChange={(ev) => this.onRadicalQueryChange(ev)}
@@ -63,7 +71,7 @@ class AppPresentation extends Component {
           kanjiClickedCallback={this.props.appendKanjiToQuery}
         ></RadicalSearchResults>
 
-        <form onSubmit={(event) => event.preventDefault()}>
+        <form className="main-form" onSubmit={(event) => event.preventDefault()}>
           <input
             id="dictionaryQueryString"
             type="text"
@@ -76,10 +84,16 @@ class AppPresentation extends Component {
             onFocus={this.onDictionaryQueryChanged}
             tabIndex={2}
             className="text-input"
+            autoFocus={true}
           />
           <Spinner visible={this.props.dictionaryIsQueryRunning} />
         </form>
-        {this.props.dictionaryErrorMessage}
+        <Alert variant="danger" show={this.props.dictionaryErrorMessage}>
+          <Alert.Heading>エラー</Alert.Heading>
+          <p>
+            {this.props.dictionaryErrorMessage}
+          </p>
+        </Alert>
         <DictionarySearchResults
           results={this.props.dictionaryQueryResults}
           showEnglishGlosses={this.state.showEnglishGlosses}
@@ -91,19 +105,23 @@ class AppPresentation extends Component {
     );
   }
 
-  onRadicalQueryChange = (ev) => {
+  onRadicalQueryChange = (ev) =>
+  {
     this.props.onRadicalQueryChange(ev.target.value);
   };
 
-  onDictionaryQueryChanged = (ev) => {
+  onDictionaryQueryChanged = (ev) =>
+  {
     this.props.onDictionaryQueryChanged(
       ev.target.value,
       ev.target.selectionStart
     );
   };
 
-  onDictionaryInputKeyPress = (ev) => {
-    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+  onDictionaryInputKeyPress = (ev) =>
+  {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp")
+    {
       this.setState((state) => ({
         showEnglishGlosses: !state.showEnglishGlosses, // I don't know why this doesn't also update the value of the checkbox
       }));
@@ -111,14 +129,16 @@ class AppPresentation extends Component {
     }
   };
 
-  handleEnglishFlagChange = (event) => {
+  handleEnglishFlagChange = (event) =>
+  {
     this.setState({
       showEnglishGlosses: event.target.checked,
     });
   };
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state) =>
+{
   return {
     dictionaryQueryResults: state.dictionary.queryResults,
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
@@ -133,15 +153,19 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) =>
+{
   return {
-    onDictionaryQueryChanged: (text, position) => {
+    onDictionaryQueryChanged: (text, position) =>
+    {
       dispatch(fetchDictionaryResultsIfNeeded(text, position));
     },
-    appendKanjiToQuery: (kanji) => {
+    appendKanjiToQuery: (kanji) =>
+    {
       dispatch(appendKanji(kanji));
     },
-    onRadicalQueryChange: (text) => {
+    onRadicalQueryChange: (text) =>
+    {
       dispatch(changeRadicalSearchInput(text));
       dispatch(fetchRadicalResults());
     },

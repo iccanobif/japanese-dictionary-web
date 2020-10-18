@@ -106,7 +106,7 @@ function DictionaryEntry(props) {
           rel="noreferrer noopener"
           style={{ verticalAlign: "middle" }}
         >
-          <img src={forvoLogo} alt="forvo" style={{ height: "1em" }}></img>
+          <img src={forvoLogo} alt="forvo" style={{ height: "1em", verticalAlign: "unset" }}></img>
         </a>
       </span>
     </span>
