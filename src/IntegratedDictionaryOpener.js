@@ -38,15 +38,18 @@ export default function IntegratedDictionaryOpener()
           <Modal.Title>統合辞書</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-          <Form onSubmit={handleSubmit} noValidate validated={validated}>
+        <Form onSubmit={handleSubmit} noValidate validated={validated}>
+          <Modal.Body>
             <Form.Group controlId="url">
-              <Form.Label>Url:</Form.Label>
               <Form.Control type="text" placeholder="Urlを入力して下さい" required value={url} onChange={(e) => setUrl(e.target.value)} />
             </Form.Group>
-            <Button variant="primary" type="submit" >Go</Button>
-          </Form>
-        </Modal.Body>
+            {/* <Modal.Footer> */}
+            <div style={{display: "flex", justifyContent: "center"}}>
+              <Button variant="primary" type="submit" >移動</Button>
+            </div>
+            {/* </Modal.Footer> */}
+          </Modal.Body>
+        </Form>
       </Modal></>
   )
 }
