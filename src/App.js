@@ -12,7 +12,7 @@ import
 } from "./redux/actions";
 import { connect } from "react-redux";
 import Alert from 'react-bootstrap/Alert'
-import IntegratedDictionaryOpener from './IntegratedDictionaryOpener.js'
+import IntegratedDictionaryOpener from './IntegratedDictionaryOpener'
 
 class AppPresentation extends Component
 {

@@ -23,8 +23,10 @@ export function RadicalSearch(props)
       case "Enter":
         if (selectedIndex !== null)
           props.appendKanjiToQuery(props.radicalsQueryResults[selectedIndex])
+        break;
+      default: break;
     }
-    
+
     if (props.radicalsQueryResults)
       if (selectedIndex > props.radicalsQueryResults.length - 1)
         setSelectedIndex(0)
@@ -60,7 +62,7 @@ function RadicalSearchResults(props)
       key={i}
       onClick={(e) => props.kanjiClickedCallback(e.target.value)}
       value={r}
-      className={"link-button " + (props.selectedIndex == i ? "selected-radical-button" : "")}
+      className={"link-button " + (props.selectedIndex === i ? "selected-radical-button" : "")}
     >
       {r}
     </button>

@@ -30,10 +30,16 @@ export default function IntegratedDictionaryOpener()
     }
   };
 
+  const textBoxRef = React.createRef()
+
+  const onShow = () => {
+    textBoxRef.current.focus()
+  }
+
   return (
     <>
       <Button size="sm" variant="outline-secondary" onClick={() => setIsModalVisible(true)}>統合辞書</Button>
-      <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)} >
+      <Modal show={isModalVisible} onHide={() => setIsModalVisible(false)} onShow={onShow} >
         <Modal.Header closeButton>
           <Modal.Title>統合辞書</Modal.Title>
         </Modal.Header>
@@ -41,13 +47,19 @@ export default function IntegratedDictionaryOpener()
         <Form onSubmit={handleSubmit} noValidate validated={validated}>
           <Modal.Body>
             <Form.Group controlId="url">
-              <Form.Control type="text" placeholder="Urlを入力して下さい" required value={url} onChange={(e) => setUrl(e.target.value)} />
+              <Form.Control
+                type="text"
+                placeholder="Urlを入力して下さい"
+                required
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                ref={textBoxRef}
+              />
+
             </Form.Group>
-            {/* <Modal.Footer> */}
-            <div style={{display: "flex", justifyContent: "center"}}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
               <Button variant="primary" type="submit" >移動</Button>
             </div>
-            {/* </Modal.Footer> */}
           </Modal.Body>
         </Form>
       </Modal></>
