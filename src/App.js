@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Spinner from "./spinner/spinner";
-import { RadicalSearchResults } from "./RadicalSearchResults";
+import { RadicalSearch } from "./RadicalSearch";
 import { DictionarySearchResults } from "./DictionarySearchResults";
 import
 {
@@ -26,7 +26,6 @@ class AppPresentation extends Component
 
   handleWindowFocus = () =>
   {
-    console.log("window got focus");
     document.getElementById("dictionaryQueryString").focus();
   };
 
@@ -56,20 +55,12 @@ class AppPresentation extends Component
           </label>
         </header>
 
-        <form className="main-form" onSubmit={(event) => event.preventDefault()}>
-          <input
-            type="text"
-            onChange={(ev) => this.onRadicalQueryChange(ev)}
-            placeholder="英語で部首の名前を入力して下さい"
-            tabIndex={1}
-            className="text-input"
-          />
-          <Spinner visible={this.props.radicalsIsQueryRunning} />
-        </form>
-        <RadicalSearchResults
-          results={this.props.radicalsQueryResults}
-          kanjiClickedCallback={this.props.appendKanjiToQuery}
-        ></RadicalSearchResults>
+        <RadicalSearch
+          radicalsIsQueryRunning={this.props.radicalsIsQueryRunning}
+          radicalsQueryResults={this.props.radicalsQueryResults}
+          appendKanjiToQuery={this.props.appendKanjiToQuery}
+          onRadicalQueryChange={this.props.onRadicalQueryChange}
+        ></RadicalSearch>
 
         <form className="main-form" onSubmit={(event) => event.preventDefault()}>
           <input
@@ -105,10 +96,7 @@ class AppPresentation extends Component
     );
   }
 
-  onRadicalQueryChange = (ev) =>
-  {
-    this.props.onRadicalQueryChange(ev.target.value);
-  };
+
 
   onDictionaryQueryChanged = (ev) =>
   {
@@ -145,8 +133,7 @@ const mapStateToProps = (state) =>
     dictionaryIsQueryRunning: state.dictionary.isQueryRunning,
     dictionaryErrorMessage: state.dictionary.errorMessage,
     dictionaryCurrentCursorPosition: state.dictionary.currentCursorPosition,
-    dictionaryInitialSelectedWordIndex:
-      state.dictionary.initialSelectedWordIndex,
+    dictionaryInitialSelectedWordIndex: state.dictionary.initialSelectedWordIndex,
 
     radicalsQueryResults: state.radicals.queryResults,
     radicalsIsQueryRunning: state.radicals.isQueryRunning,
