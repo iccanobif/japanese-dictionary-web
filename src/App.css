@@ -52,12 +52,7 @@ header {
   background-color: #68570d;
 }
 
-.forvo-link {
-  display: inline-flex;
-  margin: 2px;
-}
-
-.forvo-link img
-{
-  height: 0.7em;
+a.forvo-link {
+  margin: 5px;
+  color: #DDDACD;
 }

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./DictionarySearchResults.css";
-import forvoLogo from "./forvo.png";
 
 function generateInitialState(props)
 {
@@ -150,9 +149,13 @@ function LemmaList(props)
 
   return lemmas.map((lemma, i) => (
     <span key={i} style={{ marginRight: "1em" }}>
-      {lemma.kanjis.map((k, j) => <React.Fragment key={j}>{k}<ForvoLink text={k}></ForvoLink></React.Fragment>)}
+      {lemma.kanjis
+        .map((k, j) => <ForvoLink key={j} text={k}></ForvoLink>)
+        .reduce((acc, val) => [acc, "、", val])}
       <span className="lemma-reading">
-        （{lemma.readings.map((r, j) => <React.Fragment key={j}>{r}<ForvoLink text={r}></ForvoLink></React.Fragment>)}）
+        （{lemma.readings
+          .map((r, j) => <ForvoLink key={j} text={r}></ForvoLink>)
+          .reduce((acc, val) => [acc, "、", val])}）
       </span>
     </span>
   ))
@@ -160,16 +163,20 @@ function LemmaList(props)
 
 function ForvoLink(props)
 {
-  return <a
-    href={"https://ja.forvo.com/word/" + props.text + "/#ja"}
-    target="_blank"
-    rel="noreferrer noopener"
-    className="forvo-link"
-  >
-    <img src={forvoLogo} alt="forvo" ></img>
-  </a>
-}
+  const { text } = props
 
+  return <>
+    <a
+      href={"https://ja.forvo.com/word/" + text + "/#ja"}
+      target="_blank"
+      rel="noreferrer noopener"
+      className="forvo-link"
+      title="forvo"
+    >
+      {text}
+    </a>
+  </>
+}
 
 function DictionaryEntry(props)
 {
