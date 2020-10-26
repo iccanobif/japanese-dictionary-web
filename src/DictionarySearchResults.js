@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./DictionarySearchResults.css";
 import forvoLogo from "./forvo.png";
 
-function generateInitialState(props) {
+function generateInitialState(props)
+{
   return {
     selectedWordIndex:
       props.results.length > 0 ? props.initialSelectedWordIndex : null,
@@ -11,23 +12,28 @@ function generateInitialState(props) {
   };
 }
 
-export class DictionarySearchResults extends Component {
-  constructor(props) {
+export class DictionarySearchResults extends Component
+{
+  constructor(props)
+  {
     super(props);
     this.state = generateInitialState(props);
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props, state)
+  {
     if (
       props.results !== state.previousResults ||
       props.initialSelectedWordIndex !== state.previousInitialSelectedWordIndex
-    ) {
+    )
+    {
       return generateInitialState(props);
     }
     return null;
   }
 
-  render() {
+  render()
+  {
     if (this.props.results.length === 0) return <></>;
 
     return (
@@ -47,23 +53,27 @@ export class DictionarySearchResults extends Component {
     );
   }
 
-  handleWordClick = (index) => {
+  handleWordClick = (index) =>
+  {
     this.setState({ selectedWordIndex: index });
   };
 }
 
-function WordList(props) {
+function WordList(props)
+{
   const words = props.words;
   const selectedWordIndex = props.selectedWordIndex;
 
   return (
     <div className="word-list">
-      {words.map((w, i) => {
+      {words.map((w, i) =>
+      {
         return (
           <button
             key={i}
             value={i}
-            onClick={(event) => {
+            onClick={(event) =>
+            {
               props.onWordSelected(Number.parseInt(event.target.value));
             }}
             className={
@@ -78,11 +88,13 @@ function WordList(props) {
   );
 }
 
-function WordResults(props) {
+function WordResults(props)
+{
   if (props.wordData.dictionaryEntries.length === 0)
     return <div>一致する結果はありません</div>;
 
-  const list = props.wordData.dictionaryEntries.map((r, i) => {
+  const list = props.wordData.dictionaryEntries.map((r, i) =>
+  {
     return (
       <DictionaryEntry
         key={i}
@@ -94,24 +106,73 @@ function WordResults(props) {
   return <>{list}</>;
 }
 
-function DictionaryEntry(props) {
-  const lemmas = props.result.lemmas.map((lemma, i) => (
+function deepClone(items)
+{
+  return JSON.parse(JSON.stringify(items))
+}
+
+function LemmaList(props)
+{
+  const lemmasGroupedByKanji = deepClone(props.lemmas).reduce((acc, val) =>
+  {
+    if (acc.length === 0 || acc[acc.length - 1].kanji !== val.kanji)
+    {
+      val.readings = [val.reading]
+      val.kanjis = [val.kanji]
+      acc.push(val)
+    }
+    else 
+    {
+      acc[acc.length - 1].readings.push(val.reading)
+    }
+
+    return acc
+  }, [])
+
+  const lemmasGroupedByReading = deepClone(props.lemmas).reduce((acc, val) =>
+  {
+    if (acc.length === 0 || acc[acc.length - 1].reading !== val.reading)
+    {
+      val.readings = [val.reading]
+      val.kanjis = [val.kanji]
+      acc.push(val)
+    }
+    else 
+    {
+      acc[acc.length - 1].kanjis.push(val.kanji)
+    }
+
+    return acc
+  }, [])
+
+  // Pick the shortest grouping
+  const lemmas = lemmasGroupedByKanji.length < lemmasGroupedByReading.length ? lemmasGroupedByKanji : lemmasGroupedByReading
+
+  return lemmas.map((lemma, i) => (
     <span key={i} style={{ marginRight: "1em" }}>
-      {lemma.kanji}
+      {lemma.kanjis.map((k, j) => <React.Fragment key={j}>{k}<ForvoLink text={k}></ForvoLink></React.Fragment>)}
       <span className="lemma-reading">
-        （{lemma.reading}）
-        <a
-          href={"https://ja.forvo.com/word/" + lemma.kanji + "/#ja"}
-          target="_blank"
-          rel="noreferrer noopener"
-          style={{ verticalAlign: "middle" }}
-        >
-          <img src={forvoLogo} alt="forvo" style={{ height: "1em", verticalAlign: "unset" }}></img>
-        </a>
+        （{lemma.readings.map((r, j) => <React.Fragment key={j}>{r}<ForvoLink text={r}></ForvoLink></React.Fragment>)}）
       </span>
     </span>
-  ));
+  ))
+}
 
+function ForvoLink(props)
+{
+  return <a
+    href={"https://ja.forvo.com/word/" + props.text + "/#ja"}
+    target="_blank"
+    rel="noreferrer noopener"
+    className="forvo-link"
+  >
+    <img src={forvoLogo} alt="forvo" ></img>
+  </a>
+}
+
+
+function DictionaryEntry(props)
+{
   let glosses;
 
   if (props.result.englishGlosses.length === 0)
@@ -125,12 +186,12 @@ function DictionaryEntry(props) {
 
   return (
     <div className="dictionary-entry">
-      {lemmas}
+      <LemmaList lemmas={props.result.lemmas}></LemmaList>
       {props.result.partOfSpeech.length === 0 ? (
         ""
       ) : (
-        <i>({props.result.partOfSpeech.join(",")})</i>
-      )}
+          <i>({props.result.partOfSpeech.join(",")})</i>
+        )}
       <br />
       {props.result.accents?.join(" ")}
       <ul>
