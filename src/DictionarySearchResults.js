@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./DictionarySearchResults.css";
+const _ = require("lodash")
 
 function generateInitialState(props)
 {
@@ -105,14 +106,9 @@ function WordResults(props)
   return <>{list}</>;
 }
 
-function deepClone(items)
-{
-  return JSON.parse(JSON.stringify(items))
-}
-
 function LemmaList(props)
 {
-  const lemmasGroupedByKanji = deepClone(props.lemmas).reduce((acc, val) =>
+  const lemmasGroupedByKanji = _.cloneDeep(props.lemmas).reduce((acc, val) =>
   {
     if (acc.length === 0 || acc[acc.length - 1].kanji !== val.kanji)
     {
@@ -128,7 +124,7 @@ function LemmaList(props)
     return acc
   }, [])
 
-  const lemmasGroupedByReading = deepClone(props.lemmas).reduce((acc, val) =>
+  const lemmasGroupedByReading = _.cloneDeep(props.lemmas).reduce((acc, val) =>
   {
     if (acc.length === 0 || acc[acc.length - 1].reading !== val.reading)
     {
