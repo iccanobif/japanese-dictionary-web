@@ -21,7 +21,7 @@
     "dev": "cross-env REACT_APP_API_URL=http://localhost:8085 react-scripts start",
     "dev-remote-api": "cross-env REACT_APP_API_URL=https://janus1.iccan.us/japanese-api react-scripts start",
     "start": "node src/server.js",
-    "build": "cross-env REACT_APP_API_URL=https://janus1.iccan.us/japanese-api react-scripts build",
+    "build": "cross-env PUBLIC_URL=/japanese-dictionary-web REACT_APP_API_URL=https://janus1.iccan.us/japanese-api react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
