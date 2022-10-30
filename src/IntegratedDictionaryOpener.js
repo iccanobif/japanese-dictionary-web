@@ -21,7 +21,7 @@ export default function IntegratedDictionaryOpener()
     }
     else
     {
-      const newUrl = "http://japdictapi.herokuapp.com/integrated-dictionary/" +
+      const newUrl = process.env.REACT_APP_API_URL + "/integrated-dictionary/" +
         (url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://") ? url : "http://" + url)
       window.open(newUrl)
       setUrl("")

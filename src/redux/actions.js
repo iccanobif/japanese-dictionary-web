@@ -95,7 +95,7 @@ export function fetchRadicalResults() {
       dispatch({ type: RADICAL_START_FETCH });
 
       const result = await fetch(
-        "https://japdictapi.herokuapp.com/kanji-by-radical/" + text
+        process.env.REACT_APP_API_URL + "/kanji-by-radical/" + text
       );
 
       if (result.ok)
