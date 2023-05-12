@@ -2,6 +2,13 @@
   font-size: x-large;
 }
 
+html {
+  /* make scrollbar always visible so that it doesn't constantly appear and disappear 
+     while words are being typed in the search bar and different results (with different
+     sizes) are displayed on page. */
+  overflow-y: scroll;
+}
+
 input {
   font-size: 25px;
   line-height: normal;
