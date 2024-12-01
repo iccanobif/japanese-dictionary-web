@@ -11,10 +11,17 @@ export const RADICAL_RESULT_RECEIVED_FAIL = "RADICAL_RESULT_RECEIVED_FAIL";
 export const RADICAL_START_FETCH = "RADICAL_START_FETCH";
 
 export function appendKanji(kanji) {
-  return {
-    type: DICTIONARY_APPEND_KANJI,
-    kanji,
-  };
+  return async(dispatch, getState) => {
+    dispatch({
+      type: DICTIONARY_APPEND_KANJI,
+      kanji,
+    });
+
+    // Fetch the results for the new query
+    const { currentQueryString, currentCursorPosition } = getState().dictionary;
+    const action = fetchDictionaryResultsIfNeeded(currentQueryString, currentCursorPosition);
+    await dispatch(action);
+  }
 }
 
 export function fetchDictionaryResultsIfNeeded(text, position) {
