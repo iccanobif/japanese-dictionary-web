@@ -3,51 +3,48 @@ import "./App.css";
 import Spinner from "./spinner/spinner";
 import { RadicalSearch } from "./RadicalSearch";
 import { DictionarySearchResults } from "./DictionarySearchResults";
-import
-{
-  appendKanji,
-  fetchDictionaryResultsIfNeeded,
-  changeRadicalSearchInput,
-  fetchRadicalResults,
+import {
+appendKanji,
+fetchDictionaryResultsIfNeeded,
+changeRadicalSearchInput,
+fetchRadicalResults,
 } from "./redux/actions";
 import { connect } from "react-redux";
 import Alert from 'react-bootstrap/Alert'
 import IntegratedDictionaryOpener from './IntegratedDictionaryOpener'
+import RadicalExplorerOpener from './RadicalExplorerOpener'
 
-class AppPresentation extends Component
-{
-  constructor(props)
-  {
+class AppPresentation extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       showEnglishGlosses: false
     };
   }
 
-  handleWindowFocus = () =>
-  {
+  handleWindowFocus = () => {
     document.getElementById("dictionaryQueryString").focus();
   };
 
-  componentDidMount()
-  {
+  componentDidMount() {
     window.addEventListener("focus", this.handleWindowFocus);
   }
 
-  componentWillUnmount()
-  {
+  componentWillUnmount() {
     window.removeEventListener("focus", this.handleWindowFocus);
   }
 
-  render()
-  {
+  render() {
     return (
       <div className="App">
         <header>
-          <IntegratedDictionaryOpener></IntegratedDictionaryOpener>
+          <div id="buttons">
+            <IntegratedDictionaryOpener></IntegratedDictionaryOpener>
+            <RadicalExplorerOpener></RadicalExplorerOpener>
+          </div>
           <label>
             英語：
-              <input
+            <input
               type="checkbox"
               onChange={this.handleEnglishFlagChange}
               checked={this.state.showEnglishGlosses}
@@ -98,18 +95,15 @@ class AppPresentation extends Component
 
 
 
-  onDictionaryQueryChanged = (ev) =>
-  {
+  onDictionaryQueryChanged = (ev) => {
     this.props.onDictionaryQueryChanged(
       ev.target.value,
       ev.target.selectionStart
     );
   };
 
-  onDictionaryInputKeyPress = (ev) =>
-  {
-    if (ev.key === "ArrowDown" || ev.key === "ArrowUp")
-    {
+  onDictionaryInputKeyPress = (ev) => {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
       this.setState((state) => ({
         showEnglishGlosses: !state.showEnglishGlosses, // I don't know why this doesn't also update the value of the checkbox
       }));
@@ -117,16 +111,14 @@ class AppPresentation extends Component
     }
   };
 
-  handleEnglishFlagChange = (event) =>
-  {
+  handleEnglishFlagChange = (event) => {
     this.setState({
       showEnglishGlosses: event.target.checked,
     });
   };
 }
 
-const mapStateToProps = (state) =>
-{
+const mapStateToProps = (state) => {
   return {
     dictionaryQueryResults: state.dictionary.queryResults,
     dictionaryCurrentQueryString: state.dictionary.currentQueryString,
@@ -140,19 +132,15 @@ const mapStateToProps = (state) =>
   };
 };
 
-const mapDispatchToProps = (dispatch) =>
-{
+const mapDispatchToProps = (dispatch) => {
   return {
-    onDictionaryQueryChanged: (text, position) =>
-    {
+    onDictionaryQueryChanged: (text, position) => {
       dispatch(fetchDictionaryResultsIfNeeded(text, position));
     },
-    appendKanjiToQuery: (kanji) =>
-    {
+    appendKanjiToQuery: (kanji) => {
       dispatch(appendKanji(kanji));
     },
-    onRadicalQueryChange: (text) =>
-    {
+    onRadicalQueryChange: (text) => {
       dispatch(changeRadicalSearchInput(text));
       dispatch(fetchRadicalResults());
     },
