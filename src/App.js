@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import Alert from 'react-bootstrap/Alert'
 import IntegratedDictionaryOpener from './IntegratedDictionaryOpener'
 import RadicalExplorerOpener from './RadicalExplorerOpener'
+import DisplayRadicalsByKanji from './DisplayRadicalsByKanji'
 
 class AppPresentation extends Component {
   constructor(props) {
@@ -41,6 +42,7 @@ class AppPresentation extends Component {
           <div id="buttons">
             <IntegratedDictionaryOpener></IntegratedDictionaryOpener>
             <RadicalExplorerOpener></RadicalExplorerOpener>
+            <DisplayRadicalsByKanji></DisplayRadicalsByKanji>
           </div>
           <label>
             英語：
