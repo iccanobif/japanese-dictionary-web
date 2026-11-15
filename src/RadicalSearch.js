@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Spinner from "./spinner/spinner";
 
 export function RadicalSearch(props)
@@ -7,7 +7,6 @@ export function RadicalSearch(props)
 
   const onKeyDown = ({ key }) =>
   {
-    console.log(key)
     switch (key)
     {
       case "ArrowUp":
